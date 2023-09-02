@@ -1,0 +1,25 @@
+preferences:
+  autowire-on-sync-mode: UPDATE_OPTIONAL_DEPENDENCIES
+  repositories-mode: FAIL_ON_PROJECT_REPOS
+
+repositories:
+  gradle-plugin-portal:
+    scope: PLUGINS
+  google:
+  maven-central:
+  maven-local:
+
+plugins:
+  org.jetbrains.kotlin.jvm:
+    alias: kotlin-jvm
+    version: 1.9.10
+  com.vanniktech.maven.publish:
+    alias: maven-publish
+    version: 0.25.3
+
+libraries:
+  com.squareup:
+    kotlinpoet:
+      version: 1.14.2
+    javapoet:
+      version: 1.13.0
