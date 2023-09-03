@@ -32,13 +32,20 @@ internal typealias PropertyMap = MutableMap<String, Any>
  * @return [Pair]<[KClass], [String]>
  */
 internal fun Any.parseTypedValue(isAutoConversion: Boolean): Pair<KClass<*>, String> {
+    var isStringType = false
     val valueString = toString()
         .replace("\n", "\\n")
         .replace("\r", "\\r")
         .replace("\\", "\\\\")
-        .replace("\"", "\\\"")
+        .let {
+            if (isAutoConversion && (it.startsWith("\"") && it.endsWith("\"") || it.startsWith("'") && it.endsWith("'"))) {
+                isStringType = true
+                it.drop(1).dropLast(1)
+            } else it.replace("\"", "\\\"")
+        }
     if (isAutoConversion.not()) return Pair(String::class, "\"$valueString\"")
     val typeSpec = when {
+        isStringType -> String::class
         valueString.trim().toIntOrNull() != null -> Int::class
         valueString.trim().toLongOrNull() != null -> Long::class
         valueString.trim().toDoubleOrNull() != null -> Double::class
