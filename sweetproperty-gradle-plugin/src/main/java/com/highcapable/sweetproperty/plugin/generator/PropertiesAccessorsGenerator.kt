@@ -194,13 +194,13 @@ internal class PropertiesAccessorsGenerator {
      */
     private fun TypeSpec.Builder.addFinalValueMethod(accessorsName: String, methodName: String, value: Any) =
         addMethod(
-            MethodSpec.methodBuilder("get${methodName.capitalize()}")
-                .addJavadoc("Resolve the \"$accessorsName\" value \"$value\"")
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL).apply {
-                    val typedValue = value.parseTypedValue(configs.isEnableTypeAutoConversion)
-                    returns(typedValue.first.java)
-                    addStatement("return ${typedValue.second}")
-                }.build()
+            MethodSpec.methodBuilder("get${methodName.capitalize()}").apply {
+                val typedValue = value.parseTypedValue(configs.isEnableTypeAutoConversion)
+                addJavadoc("Resolve the \"$accessorsName\" value ${typedValue.second}")
+                addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                    .returns(typedValue.first.java)
+                    .addStatement("return ${typedValue.second}")
+            }.build()
         )
 
     /**

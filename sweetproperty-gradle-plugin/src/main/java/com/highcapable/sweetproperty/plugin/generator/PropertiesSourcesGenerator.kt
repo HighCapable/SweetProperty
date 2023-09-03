@@ -70,7 +70,7 @@ internal class PropertiesSourcesGenerator {
                 keyValues.forEach { (key, value) ->
                     val typedValue = value.parseTypedValue(configs.isEnableTypeAutoConversion)
                     addProperty(PropertySpec.builder(key.firstNumberToLetter().underscore(), typedValue.first).apply {
-                        addKdoc("Resolve the \"$key\" value \"$value\"")
+                        addKdoc("Resolve the \"$key\" value ${typedValue.second}")
                         if (configs.isEnableRestrictedAccess) addModifiers(KModifier.INTERNAL)
                         addModifiers(KModifier.CONST)
                         initializer(typedValue.second.toKotlinPoetSpace())
