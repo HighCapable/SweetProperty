@@ -1,7 +1,7 @@
 # Sweet Property
 
-![GitHub license](https://img.shields.io/github/license/HighCapable/SweetProperty?color=blue&cacheSeconds=https%3A%2F%2Fgithub.com%2FHighCapable%2FSweetProperty%2Fblob%2Fmaster%2FLICENSE)
-![GitHub release](https://img.shields.io/github/v/release/HighCapable/SweetProperty?display_name=release&logo=github&color=green&link=https%3A%2F%2Fgithub.com%2FHighCapable%2FSweetProperty%2Freleases%2Flatest)
+[![GitHub license](https://img.shields.io/github/license/HighCapable/SweetProperty?color=blue)](https://github.com/HighCapable/SweetProperty/blob/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/v/release/HighCapable/SweetProperty?display_name=release&logo=github&color=green)](https://github.com/HighCapable/SweetProperty/releases)
 [![Telegram](https://img.shields.io/badge/discussion-Telegram-blue.svg?logo=telegram)](https://t.me/HighCapable_Dev)
 
 <img src="https://github.com/HighCapable/SweetProperty/blob/master/img-src/icon.png?raw=true" width = "100" height = "100" alt="LOGO"/>
