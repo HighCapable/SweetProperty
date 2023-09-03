@@ -85,7 +85,11 @@ sweetProperty {
             // Whether to enable the type automatic conversion function
             // Enabled by default, when enabled,
             // the type in the properties key-values will be automatically recognized and converted to the corresponding type
-            // For example "name=hello" and "number=1" they will be automatically converted to String and Int
+            // After enabling, if you want to force the content of a value to be a string type,
+            // you can use single quotes or double quotes to wrap the entire string
+            // Note: After turning off this function, the functions mentioned above will also become invalid at the same time
+            // For example name=hello and number=1 they will be automatically converted to String and Int
+            // For example stringNumber="1" or stringNumber='1' they will be coerced to String
             isEnableTypeAutoConversion = true
             // Whether to enable key-values content interpolation
             // Enabled by default, after enabling, the ${...} content in the properties key-values content

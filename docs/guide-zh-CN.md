@@ -81,7 +81,10 @@ sweetProperty {
             isEnableExcludeNonStringValue = true
             // 是否启用类型自动转换功能
             // 默认启用，启用后将自动识别属性键值中的类型并转换为对应的类型
-            // 例如 "name=hello" 和 "number=1" 它们将会被自动转换为 String 和 Int
+            // 在启用后如果你想要强制设置一个键值内容为字符串类型，你可以使用单引号或双引号包裹整个字符串
+            // 注意：在关闭此功能后如上所述的功能也将同时失效
+            // 例如 name=hello 和 number=1 它们将会被自动转换为 String 和 Int
+            // 例如 stringNumber="1" 或 stringNumber='1' 它们将会被强制转换为 String
             isEnableTypeAutoConversion = true
             // 是否启用键值内容插值功能
             // 默认启用，启用后将自动识别属性键值内容中的 ${...} 内容并进行替换
