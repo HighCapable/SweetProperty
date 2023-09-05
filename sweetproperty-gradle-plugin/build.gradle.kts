@@ -23,6 +23,7 @@ kotlin {
 dependencies {
     implementation(com.squareup.kotlinpoet)
     implementation(com.squareup.javapoet)
+    implementation(net.lingala.zip4j.zip4j)
 }
 
 gradlePlugin {

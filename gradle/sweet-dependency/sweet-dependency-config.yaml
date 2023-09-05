@@ -23,3 +23,6 @@ libraries:
       version: 1.14.2
     javapoet:
       version: 1.13.0
+  net.lingala.zip4j:
+    zip4j:
+      version: 2.11.5
