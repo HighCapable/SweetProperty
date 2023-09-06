@@ -83,8 +83,8 @@ internal object CodeCompiler {
                     sourceFile.writeText(it.getCharContent(true).toString())
                 }
             }; outputClassesDir.deleteEmptyRecursively()
-            writeMetaInf(outputClassesDir.absolutePath)
-            writeMetaInf(outputSourcesDir.absolutePath)
+            writeMetaInf(outputClassesDir)
+            writeMetaInf(outputSourcesDir)
             createJarAndPom(pomData, outputDir, outputBuildDir, outputClassesDir, outputSourcesDir)
         } else SError.make("Failed to compile java files into path: $outputDirPath\n$diagnosticsMessage")
     }
@@ -98,30 +98,29 @@ internal object CodeCompiler {
      * @param sourcesDir 编译源码目录
      */
     private fun createJarAndPom(pomData: MavenPomData, outputDir: File, buildDir: File, classesDir: File, sourcesDir: File) {
-        val pomPath = "${pomData.groupId.toPomPathName()}/${pomData.artifactId}/${pomData.version}"
-        val pomDir = "${outputDir.absolutePath}/$pomPath".toFile().also { if (it.exists().not()) it.mkdirs() }
+        val pomDir = outputDir.resolve(pomData.relativePomPath).also { if (it.exists().not()) it.mkdirs() }
         packageToJar(classesDir, pomDir, pomData, isSourcesJar = false)
         packageToJar(sourcesDir, pomDir, pomData, isSourcesJar = true)
-        writePom(pomDir.absolutePath, pomData)
+        writePom(pomDir, pomData)
         buildDir.deleteRecursively()
     }
 
     /**
      * 写入 META-INF/MANIFEST.MF
-     * @param dirPath 当前目录路径
+     * @param dir 当前目录
      */
-    private fun writeMetaInf(dirPath: String) {
-        val metaInfFile = "$dirPath/META-INF".toFile().apply { mkdirs() }
-        "${metaInfFile.absolutePath}/MANIFEST.MF".toFile().writeText("Manifest-Version: 1.0")
+    private fun writeMetaInf(dir: File) {
+        val metaInfDir = dir.resolve("META-INF").apply { mkdirs() }
+        metaInfDir.resolve("MANIFEST.MF").writeText("Manifest-Version: 1.0")
     }
 
     /**
      * 写入 POM
-     * @param dirPath 当前目录路径
+     * @param dir 当前目录
      * @param pomData Maven POM 实体
      */
-    private fun writePom(dirPath: String, pomData: MavenPomData) =
-        "$dirPath/${pomData.artifactId}-${pomData.version}.pom".toFile().writeText(
+    private fun writePom(dir: File, pomData: MavenPomData) =
+        dir.resolve("${pomData.artifactId}-${pomData.version}.pom").writeText(
             """
               <?xml version="1.0" encoding="UTF-8"?>
               <project
@@ -135,12 +134,6 @@ internal object CodeCompiler {
               </project>
             """.trimIndent()
         )
-
-    /**
-     * 转换到 [MavenPomData] 目录名称
-     * @return [String]
-     */
-    private fun String.toPomPathName() = trim().replace(".", "/").replace("_", "/").replace(":", "/").replace("-", "/")
 
     /**
      * 转换到文件
@@ -166,7 +159,7 @@ internal object CodeCompiler {
      */
     private fun packageToJar(buildDir: File, outputDir: File, pomData: MavenPomData, isSourcesJar: Boolean) {
         if (buildDir.exists().not()) SError.make("Jar file output path not found: ${buildDir.absolutePath}")
-        val jarFile = "${outputDir.absolutePath}/${pomData.artifactId}-${pomData.version}${if (isSourcesJar) "-sources" else ""}.jar".toFile()
+        val jarFile = outputDir.resolve("${pomData.artifactId}-${pomData.version}${if (isSourcesJar) "-sources" else ""}.jar")
         if (jarFile.exists()) jarFile.delete()
         ZipFile(jarFile).addFolder(buildDir, ZipParameters().apply { isIncludeRootFolder = false })
     }
