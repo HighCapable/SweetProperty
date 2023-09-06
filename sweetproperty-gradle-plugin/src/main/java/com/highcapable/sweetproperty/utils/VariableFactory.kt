@@ -22,6 +22,12 @@
 package com.highcapable.sweetproperty.utils
 
 /**
+ * 转换当前 [Map] 键值到字符串类型
+ * @return [Map]<[String], [String]>
+ */
+internal inline fun <reified K, V> Map<K, V>.toStringMap() = mapKeys { e -> e.key.toString() }.mapValues { e -> e.value.toString() }
+
+/**
  * 当数组不为空时返回非空
  * @return [T] or null
  */
