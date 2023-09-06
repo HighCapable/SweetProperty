@@ -256,43 +256,49 @@ internal object PropertiesDeployHelper {
         val propteries = mutableMapOf<String, Any>()
         configs.permanentKeyValues.forEach { (key, value) -> propteries[key] = value }
         configs.generateLocationTypes.forEach {
-            val nativeKeyValues = when (it) {
+            val keyValues = when (it) {
                 GenerateLocationType.CURRENT_PROJECT -> createProperties(configs, descriptor.currentDir)
                 GenerateLocationType.ROOT_PROJECT -> createProperties(configs, descriptor.rootDir)
                 GenerateLocationType.GLOBAL -> createProperties(configs, descriptor.homeDir)
                 GenerateLocationType.SYSTEM -> System.getProperties()
                 GenerateLocationType.SYSTEM_ENV -> System.getenv()
             } ?: emptyMap()
-            val resolveKeyValues = mutableMapOf<String, Any>()
-            nativeKeyValues.forEach native@{ (key, value) ->
-                val hasExcludeKeys = configs.excludeKeys.noEmpty()?.any { content ->
-                    when (content) {
-                        is Regex -> content.toString().isNotBlank() && content.matches(key.toString())
-                        else -> content.toString() == key
-                    }
-                } ?: false
-                if (hasExcludeKeys) return@native
-                val isAvailableKeyValue = if (configs.isEnableExcludeNonStringValue)
+            keyValues.filter { (key, value) ->
+                if (configs.isEnableExcludeNonStringValue)
                     key is CharSequence && key.isNotBlank() && value is CharSequence
                 else key.toString().isNotBlank() && value != null
-                if (isAvailableKeyValue) resolveKeyValues[key.toString()] = value
-            }
-            resolveKeyValues.forEach { (key, value) ->
-                val resolveKeys = mutableListOf<String>()
+            }.mapKeys { e -> e.key.toString() }.filter { (key, _) ->
+                configs.includeKeys.noEmpty()?.any { content ->
+                    when (content) {
+                        is Regex -> content.matches(key)
+                        else -> content.toString() == key
+                    }
+                } ?: true
+            }.filter { (key, _) ->
+                configs.excludeKeys.noEmpty()?.none { content ->
+                    when (content) {
+                        is Regex -> content.matches(key)
+                        else -> content.toString() == key
+                    }
+                } ?: true
+            }.toMutableMap().also { resolveKeyValues ->
+                resolveKeyValues.forEach { (key, value) ->
+                    val resolveKeys = mutableListOf<String>()
 
-                /**
-                 * 处理键值内容
-                 * @return [String]
-                 */
-                fun String.resolveValue(): String = replaceInterpolation { matchKey ->
-                    if (resolveKeys.size > 5) SError.make("Key \"$key\" has been called recursively multiple times of those $resolveKeys")
-                    resolveKeys.add(matchKey)
-                    val resolveValue = if (configs.isEnableValueInterpolation) resolveKeyValues[matchKey]?.toString() ?: "" else matchKey
-                    if (resolveValue.hasInterpolation()) resolveValue.resolveValue()
-                    else resolveValue
-                }
-                if (value.toString().hasInterpolation()) resolveKeyValues[key] = value.toString().resolveValue()
-            }; propteries.putAll(resolveKeyValues)
+                    /**
+                     * 处理键值内容
+                     * @return [String]
+                     */
+                    fun String.resolveValue(): String = replaceInterpolation { matchKey ->
+                        if (resolveKeys.size > 5) SError.make("Key \"$key\" has been called recursively multiple times of those $resolveKeys")
+                        resolveKeys.add(matchKey)
+                        val resolveValue = if (configs.isEnableValueInterpolation) resolveKeyValues[matchKey]?.toString() ?: "" else matchKey
+                        if (resolveValue.hasInterpolation()) resolveValue.resolveValue()
+                        else resolveValue
+                    }
+                    if (value.toString().hasInterpolation()) resolveKeyValues[key] = value.toString().resolveValue()
+                }; propteries.putAll(resolveKeyValues)
+            }
         }; return propteries
     }
 

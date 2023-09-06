@@ -75,6 +75,10 @@ internal object DefaultConfigs {
             get() = selfBase?.excludeKeys
                 ?: globalBase?.excludeKeys
                 ?: baseGenerateConfigs(name).excludeKeys
+        override val includeKeys
+            get() = selfBase?.includeKeys
+                ?: globalBase?.includeKeys
+                ?: baseGenerateConfigs(name).includeKeys
         override val isEnableExcludeNonStringValue
             get() = selfBase?.isEnableExcludeNonStringValue
                 ?: globalBase?.isEnableExcludeNonStringValue
@@ -123,6 +127,10 @@ internal object DefaultConfigs {
             get() = selfBase?.excludeKeys
                 ?: globalBase?.excludeKeys
                 ?: baseGenerateConfigs(name).excludeKeys
+        override val includeKeys
+            get() = selfBase?.includeKeys
+                ?: globalBase?.includeKeys
+                ?: baseGenerateConfigs(name).includeKeys
         override val isEnableExcludeNonStringValue
             get() = selfBase?.isEnableExcludeNonStringValue
                 ?: globalBase?.isEnableExcludeNonStringValue
@@ -152,6 +160,7 @@ internal object DefaultConfigs {
         override val propertiesFileName get() = ISweetPropertyConfigs.DEFAULT_PROPERTIES_FILE_NAME
         override val permanentKeyValues get() = mutableMapOf<String, Any>()
         override val excludeKeys get() = mutableListOf<Any>()
+        override val includeKeys get() = mutableListOf<Any>()
         override val isEnableExcludeNonStringValue get() = true
         override val isEnableTypeAutoConversion get() = true
         override val isEnableValueInterpolation get() = true

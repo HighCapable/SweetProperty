@@ -206,6 +206,9 @@ open class SweetPropertyConfigureExtension internal constructor() {
         /** 当前被排除的属性键值名称数组 */
         internal var excludeKeys: MutableList<Any>? = null
 
+        /** 当前被包含的属性键值名称数组 */
+        internal var includeKeys: MutableList<Any>? = null
+
         /** 当前生成位置类型数组 */
         internal var generateLocationTypes: Array<GenerateLocationType>? = null
 
@@ -311,6 +314,20 @@ open class SweetPropertyConfigureExtension internal constructor() {
             if (keys.isEmpty()) SError.make("Exclude keys must not be empty")
             if (keys.any { it.toString().isBlank() }) SError.make("Exclude keys must not have blank contents")
             excludeKeys = keys.distinct().toMutableList()
+        }
+
+        /**
+         * 设置需要包含的属性键值名称数组
+         *
+         * 在这里可以设置一些你希望从已知的属性键值中包含的键值名称
+         *
+         * 这些键值在属性键值存在它们时被包含 - 未被包含的键值不会出现在生成的代码中
+         * @param keys 键值名称数组 - 你可以传入 [Regex] 或使用 [String.toRegex] 以使用正则功能
+         */
+        fun includeKeys(vararg keys: Any) {
+            if (keys.isEmpty()) SError.make("Include keys must not be empty")
+            if (keys.any { it.toString().isBlank() }) SError.make("Include keys must not have blank contents")
+            includeKeys = keys.distinct().toMutableList()
         }
 
         /**

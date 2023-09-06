@@ -129,6 +129,9 @@ internal interface ISweetPropertyConfigs {
         /** 被排除的属性键值名称数组 */
         val excludeKeys: MutableList<Any>
 
+        /** 被包含的属性键值名称数组 */
+        val includeKeys: MutableList<Any>
+
         /** 是否启用排除非字符串类型键值内容 */
         val isEnableExcludeNonStringValue: Boolean
 

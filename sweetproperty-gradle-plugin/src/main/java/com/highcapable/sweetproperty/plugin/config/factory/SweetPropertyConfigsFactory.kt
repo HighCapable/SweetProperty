@@ -104,6 +104,10 @@ private fun SweetPropertyConfigureExtension.SourcesCodeGenerateConfigureExtensio
         get() = this@create.excludeKeys
             ?: global?.excludeKeys
             ?: DefaultConfigs.sourcesCodeGenerateConfigs(name, selfBase, globalBase).excludeKeys
+    override val includeKeys
+        get() = this@create.includeKeys
+            ?: global?.includeKeys
+            ?: DefaultConfigs.sourcesCodeGenerateConfigs(name, selfBase, globalBase).includeKeys
     override val isEnableExcludeNonStringValue
         get() = this@create.isEnableExcludeNonStringValue
             ?: selfBase?.isEnableExcludeNonStringValue
@@ -167,6 +171,10 @@ private fun SweetPropertyConfigureExtension.BuildScriptGenerateConfigureExtensio
         get() = this@create.excludeKeys
             ?: global?.excludeKeys
             ?: DefaultConfigs.buildScriptGenerateConfigs(name, selfBase, globalBase).excludeKeys
+    override val includeKeys
+        get() = this@create.includeKeys
+            ?: global?.includeKeys
+            ?: DefaultConfigs.buildScriptGenerateConfigs(name, selfBase, globalBase).includeKeys
     override val isEnableExcludeNonStringValue
         get() = this@create.isEnableExcludeNonStringValue
             ?: selfBase?.isEnableExcludeNonStringValue
