@@ -156,7 +156,10 @@ internal object PropertiesDeployHelper {
             allProperties.add(generatedProperties(subConfigs.buildScript, ProjectDescriptor.create(settings, name)))
             allConfigs.add(subConfigs.buildScript)
         }
-        if (isConfigsModified.not() && allProperties == cachedSettingsProperties && accessorsDir.isEmpty().not()) return
+        if (isConfigsModified.not() &&
+            allProperties == cachedSettingsProperties &&
+            accessorsDir.resolve(accessorsPomData.relativePomPath).isEmpty().not()
+        ) return
         cachedSettingsProperties = allProperties
         accessorsGenerator.build(allConfigs, allProperties).compile(accessorsPomData, accessorsDir.absolutePath, accessorsGenerator.compileStubFiles)
     }
@@ -166,7 +169,8 @@ internal object PropertiesDeployHelper {
      * @param rootProject 当前根项目
      */
     private fun resolveAccessors(rootProject: Project) {
-        if (accessorsDir.isEmpty().not()) rootProject.addDependencyToBuildScript(accessorsDir.absolutePath, accessorsPomData)
+        if (accessorsDir.resolve(accessorsPomData.relativePomPath).isEmpty().not())
+            rootProject.addDependencyToBuildScript(accessorsDir.absolutePath, accessorsPomData)
     }
 
     /**
@@ -178,7 +182,15 @@ internal object PropertiesDeployHelper {
         fun Project.deploy() {
             val configs = configs.with(this).buildScript
             if (configs.isEnable.not()) return
-            getOrCreate(configs.extensionName.camelcase(), loadBuildScriptClass(accessorsGenerator.propertiesClass(configs.name)))
+            val className = accessorsGenerator.propertiesClass(configs.name)
+            val accessorsClass = loadBuildScriptClass(className) ?: SError.make(
+                """
+                  Generated class "$className" not found, stop loading $this
+                  Please check whether the initialization process is interrupted and re-run Gradle Sync
+                  If this doesn't work, please manually delete the entire "${accessorsDir.absolutePath}" directory
+                """.trimIndent()
+            )
+            getOrCreate(configs.extensionName.camelcase(), accessorsClass)
         }
         rootProject.deploy()
         rootProject.subprojects.forEach { it.deploy() }

@@ -67,4 +67,4 @@ internal fun Project.addDependencyToBuildScript(repositoryPath: String, pomData:
  * @param name [Class] 完整名称
  * @return [Class]
  */
-internal fun Project.loadBuildScriptClass(name: String) = buildscript.classLoader.loadClass(name)
+internal fun Project.loadBuildScriptClass(name: String) = runCatching { buildscript.classLoader.loadClass(name) }.getOrNull()
