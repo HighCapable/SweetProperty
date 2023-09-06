@@ -26,6 +26,9 @@ import kotlin.reflect.KClass
 /** 属性键值数组类型定义 */
 internal typealias PropertyMap = MutableMap<String, Any>
 
+/** 属性键值规则类型定义 */
+internal typealias PropertyValueRule = (value: String) -> String
+
 /**
  * 解析到键值内容类型
  * @param isAutoConversion 是否自动转换类型

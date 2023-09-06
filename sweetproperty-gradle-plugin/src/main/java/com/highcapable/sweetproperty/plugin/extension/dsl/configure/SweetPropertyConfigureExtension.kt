@@ -28,6 +28,7 @@ import com.highcapable.sweetproperty.gradle.factory.isUnSafeExtName
 import com.highcapable.sweetproperty.plugin.config.factory.create
 import com.highcapable.sweetproperty.plugin.config.proxy.ISweetPropertyConfigs
 import com.highcapable.sweetproperty.plugin.config.type.GenerateLocationType
+import com.highcapable.sweetproperty.plugin.generator.factory.PropertyValueRule
 import com.highcapable.sweetproperty.utils.debug.SError
 import com.highcapable.sweetproperty.utils.noEmpty
 import org.gradle.api.Action
@@ -212,6 +213,9 @@ open class SweetPropertyConfigureExtension internal constructor() {
         /** 当前被包含的属性键值名称数组 */
         internal var includeKeys: MutableList<Any>? = null
 
+        /** 当前属性键值规则数组 */
+        internal var keyValuesRules: MutableMap<String, PropertyValueRule>? = null
+
         /** 当前生成位置类型数组 */
         internal var generateLocationTypes: Array<GenerateLocationType>? = null
 
@@ -354,6 +358,51 @@ open class SweetPropertyConfigureExtension internal constructor() {
             if (keys.any { it.toString().isBlank() }) SError.make("Include keys must not have blank contents")
             includeKeys = keys.distinct().toMutableList()
         }
+
+        /**
+         * 设置属性键值规则数组
+         *
+         * 你可以设置一组键值规则 - 使用 [createValueRule] 创建新的规则 - 用于解析得到的键值内容
+         *
+         * 示例如下 ↓
+         *
+         * ```kotlin
+         * keyValuesRules(
+         *     "some.key1" to createValueRule { if (it.contains("_")) it.replace("_", "-") else it },
+         *     "some.key2" to createValueRule { "$it-value" }
+         * )
+         * ```
+         *
+         * 这些键值规则在属性键值存在它们时被应用
+         * @param pairs 属性键值规则数组
+         */
+        @JvmName("-kotlin-dsl-only-keyValuesRules-")
+        fun keyValuesRules(vararg pairs: Pair<String, PropertyValueRule>) {
+            if (pairs.isEmpty()) SError.make("Key-values rules must not be empty")
+            if (pairs.any { it.first.isBlank() }) SError.make("Key-values rules must not have blank contents")
+            keyValuesRules = mutableMapOf(*pairs)
+        }
+
+        /**
+         * 设置属性键值规则数组 (Groovy 兼容方法)
+         *
+         * 你可以设置一组键值规则 - 使用 [createValueRule] 创建新的规则 - 用于解析得到的键值内容
+         *
+         * 这些键值规则在属性键值存在它们时被应用
+         * @param rules 属性键值规则数组
+         */
+        fun keyValuesRules(rules: Map<String, PropertyValueRule>) {
+            if (rules.isEmpty()) SError.make("Key-values rules must not be empty")
+            if (rules.any { it.key.isBlank() }) SError.make("Key-values rules must not have blank contents")
+            keyValuesRules = rules.toMutableMap()
+        }
+
+        /**
+         * 创建新的属性键值规则
+         * @param rule 回调当前规则
+         * @return [PropertyValueRule]
+         */
+        fun createValueRule(rule: PropertyValueRule) = rule
 
         /**
          * 设置从何处生成属性键值

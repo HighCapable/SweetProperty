@@ -24,6 +24,7 @@ package com.highcapable.sweetproperty.plugin.config.proxy
 import com.highcapable.sweetproperty.SweetProperty
 import com.highcapable.sweetproperty.generated.SweetPropertyProperties
 import com.highcapable.sweetproperty.plugin.config.type.GenerateLocationType
+import com.highcapable.sweetproperty.plugin.generator.factory.PropertyValueRule
 
 /**
  * [SweetProperty] 配置类接口类
@@ -131,6 +132,9 @@ internal interface ISweetPropertyConfigs {
 
         /** 被包含的属性键值名称数组 */
         val includeKeys: MutableList<Any>
+
+        /** 属性键值规则数组 */
+        val keyValuesRules: MutableMap<String, PropertyValueRule>
 
         /** 是否启用排除非字符串类型键值内容 */
         val isEnableExcludeNonStringValue: Boolean

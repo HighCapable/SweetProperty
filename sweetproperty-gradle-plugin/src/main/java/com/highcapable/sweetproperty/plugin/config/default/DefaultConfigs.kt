@@ -23,6 +23,7 @@ package com.highcapable.sweetproperty.plugin.config.default
 
 import com.highcapable.sweetproperty.plugin.config.proxy.ISweetPropertyConfigs
 import com.highcapable.sweetproperty.plugin.extension.dsl.configure.SweetPropertyConfigureExtension
+import com.highcapable.sweetproperty.plugin.generator.factory.PropertyValueRule
 
 /**
  * 默认配置类实现类
@@ -78,6 +79,10 @@ internal object DefaultConfigs {
             get() = selfBase?.includeKeys
                 ?: globalBase?.includeKeys
                 ?: baseGenerateConfigs(name).includeKeys
+        override val keyValuesRules
+            get() = selfBase?.keyValuesRules
+                ?: globalBase?.keyValuesRules
+                ?: baseGenerateConfigs(name).keyValuesRules
         override val isEnableExcludeNonStringValue
             get() = selfBase?.isEnableExcludeNonStringValue
                 ?: globalBase?.isEnableExcludeNonStringValue
@@ -130,6 +135,10 @@ internal object DefaultConfigs {
             get() = selfBase?.includeKeys
                 ?: globalBase?.includeKeys
                 ?: baseGenerateConfigs(name).includeKeys
+        override val keyValuesRules
+            get() = selfBase?.keyValuesRules
+                ?: globalBase?.keyValuesRules
+                ?: baseGenerateConfigs(name).keyValuesRules
         override val isEnableExcludeNonStringValue
             get() = selfBase?.isEnableExcludeNonStringValue
                 ?: globalBase?.isEnableExcludeNonStringValue
@@ -160,6 +169,7 @@ internal object DefaultConfigs {
         override val permanentKeyValues get() = mutableMapOf<String, Any>()
         override val excludeKeys get() = mutableListOf<Any>()
         override val includeKeys get() = mutableListOf<Any>()
+        override val keyValuesRules get() = mutableMapOf<String, PropertyValueRule>()
         override val isEnableExcludeNonStringValue get() = true
         override val isEnableTypeAutoConversion get() = true
         override val isEnableValueInterpolation get() = true

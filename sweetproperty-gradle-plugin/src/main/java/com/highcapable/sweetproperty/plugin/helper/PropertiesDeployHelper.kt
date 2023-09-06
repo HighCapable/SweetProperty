@@ -283,7 +283,7 @@ internal object PropertiesDeployHelper {
                     }
                 } ?: true
             }.toMutableMap().also { resolveKeyValues ->
-                resolveKeyValues.forEach { (key, value) ->
+                resolveKeyValues.onEach { (key, value) ->
                     val resolveKeys = mutableListOf<String>()
 
                     /**
@@ -298,6 +298,8 @@ internal object PropertiesDeployHelper {
                         else resolveValue
                     }
                     if (value.hasInterpolation()) resolveKeyValues[key] = value.resolveValue()
+                }.takeIf { configs.keyValuesRules.isNotEmpty() }?.forEach { (key, value) ->
+                    configs.keyValuesRules[key]?.also { resolveKeyValues[key] = it(value) }
                 }; propteries.putAll(resolveKeyValues)
             }
         }; return propteries
