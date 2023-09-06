@@ -200,6 +200,9 @@ open class SweetPropertyConfigureExtension internal constructor() {
      */
     open inner class BaseGenerateConfigureExtension internal constructor() {
 
+        /** 当前属性配置文件路径数组 */
+        internal var propertiesFileNames: MutableList<String>? = null
+
         /** 当前固定存在的属性键值数组 */
         internal var permanentKeyValues: MutableMap<String, Any>? = null
 
@@ -229,10 +232,11 @@ open class SweetPropertyConfigureExtension internal constructor() {
         /**
          * 设置属性配置文件名称
          *
-         * 默认为 [ISweetPropertyConfigs.DEFAULT_PROPERTIES_FILE_NAME]
+         * - 此方法已弃用 - 在之后的版本中将直接被删除
          *
-         * - 注意：一般情况下不需要修改此设置 - 错误的文件名将导致获取到空键值内容
+         * - 请现在迁移到 [propertiesFileNames]
          */
+        @Deprecated(message = "Migrate to propertiesFileNames(...)")
         var propertiesFileName = ""
             @JvmName("propertiesFileName") set
 
@@ -265,6 +269,27 @@ open class SweetPropertyConfigureExtension internal constructor() {
          */
         var isEnableValueInterpolation: Boolean? = null
             @JvmName("enableValueInterpolation") set
+
+        /**
+         * 设置属性配置文件名称数组
+         *
+         * 属性配置文件将根据你设置的文件名称自动从当前根项目、子项目以及用户目录的根目录进行获取
+         *
+         * 默认为 [ISweetPropertyConfigs.DEFAULT_PROPERTIES_FILE_NAME]
+         *
+         * 你可以添加多组属性配置文件名称 - 将按照顺序依次进行读取
+         *
+         * - 注意：一般情况下不需要修改此设置 - 错误的文件名称将导致获取到空键值内容
+         * @param names 要添加的属性配置文件名称数组
+         * @param isAddDefault 是否添加默认的属性配置文件名称 - 默认是
+         */
+        @JvmOverloads
+        fun propertiesFileNames(vararg names: String, isAddDefault: Boolean = true) {
+            if (names.isEmpty()) SError.make("Properties file names must not be empty")
+            if (names.any { it.isBlank() }) SError.make("Properties file names must not have blank contents")
+            propertiesFileNames = names.distinct().toMutableList()
+            if (isAddDefault) propertiesFileNames?.add(0, ISweetPropertyConfigs.DEFAULT_PROPERTIES_FILE_NAME)
+        }
 
         /**
          * 设置固定存在的属性键值数组

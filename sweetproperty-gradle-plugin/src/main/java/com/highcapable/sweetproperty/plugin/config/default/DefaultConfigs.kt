@@ -23,7 +23,6 @@ package com.highcapable.sweetproperty.plugin.config.default
 
 import com.highcapable.sweetproperty.plugin.config.proxy.ISweetPropertyConfigs
 import com.highcapable.sweetproperty.plugin.extension.dsl.configure.SweetPropertyConfigureExtension
-import com.highcapable.sweetproperty.utils.noBlank
 
 /**
  * 默认配置类实现类
@@ -63,10 +62,10 @@ internal object DefaultConfigs {
             get() = selfBase?.isEnable
                 ?: globalBase?.isEnable
                 ?: baseGenerateConfigs(name).isEnable
-        override val propertiesFileName
-            get() = selfBase?.propertiesFileName?.noBlank()
-                ?: globalBase?.propertiesFileName?.noBlank()
-                ?: baseGenerateConfigs(name).propertiesFileName
+        override val propertiesFileNames
+            get() = selfBase?.propertiesFileNames
+                ?: globalBase?.propertiesFileNames
+                ?: baseGenerateConfigs(name).propertiesFileNames
         override val permanentKeyValues
             get() = selfBase?.permanentKeyValues
                 ?: globalBase?.permanentKeyValues
@@ -115,10 +114,10 @@ internal object DefaultConfigs {
             get() = selfBase?.isEnable
                 ?: globalBase?.isEnable
                 ?: baseGenerateConfigs(name).isEnable
-        override val propertiesFileName
-            get() = selfBase?.propertiesFileName?.noBlank()
-                ?: globalBase?.propertiesFileName?.noBlank()
-                ?: baseGenerateConfigs(name).propertiesFileName
+        override val propertiesFileNames
+            get() = selfBase?.propertiesFileNames
+                ?: globalBase?.propertiesFileNames
+                ?: baseGenerateConfigs(name).propertiesFileNames
         override val permanentKeyValues
             get() = selfBase?.permanentKeyValues
                 ?: globalBase?.permanentKeyValues
@@ -157,7 +156,7 @@ internal object DefaultConfigs {
     private fun baseGenerateConfigs(name: String) = object : ISweetPropertyConfigs.IBaseGenerateConfigs {
         override val name get() = name
         override val isEnable get() = true
-        override val propertiesFileName get() = ISweetPropertyConfigs.DEFAULT_PROPERTIES_FILE_NAME
+        override val propertiesFileNames get() = mutableListOf(ISweetPropertyConfigs.DEFAULT_PROPERTIES_FILE_NAME)
         override val permanentKeyValues get() = mutableMapOf<String, Any>()
         override val excludeKeys get() = mutableListOf<Any>()
         override val includeKeys get() = mutableListOf<Any>()

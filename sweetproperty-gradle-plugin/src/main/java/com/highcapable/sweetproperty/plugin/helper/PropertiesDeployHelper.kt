@@ -45,8 +45,8 @@ import com.highcapable.sweetproperty.utils.hasInterpolation
 import com.highcapable.sweetproperty.utils.isEmpty
 import com.highcapable.sweetproperty.utils.noBlank
 import com.highcapable.sweetproperty.utils.noEmpty
-import com.highcapable.sweetproperty.utils.parseFileSeparator
 import com.highcapable.sweetproperty.utils.replaceInterpolation
+import com.highcapable.sweetproperty.utils.toStringMap
 import com.highcapable.sweetproperty.utils.uppercamelcase
 import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Project
@@ -256,18 +256,19 @@ internal object PropertiesDeployHelper {
         val propteries = mutableMapOf<String, Any>()
         configs.permanentKeyValues.forEach { (key, value) -> propteries[key] = value }
         configs.generateLocationTypes.forEach {
-            val keyValues = when (it) {
-                GenerateLocationType.CURRENT_PROJECT -> createProperties(configs, descriptor.currentDir)
-                GenerateLocationType.ROOT_PROJECT -> createProperties(configs, descriptor.rootDir)
-                GenerateLocationType.GLOBAL -> createProperties(configs, descriptor.homeDir)
-                GenerateLocationType.SYSTEM -> System.getProperties()
-                GenerateLocationType.SYSTEM_ENV -> System.getenv()
-            } ?: emptyMap()
-            keyValues.filter { (key, value) ->
+            mutableMapOf<Any?, Any?>().apply {
+                when (it) {
+                    GenerateLocationType.CURRENT_PROJECT -> createProperties(configs, descriptor.currentDir).forEach { putAll(it) }
+                    GenerateLocationType.ROOT_PROJECT -> createProperties(configs, descriptor.rootDir).forEach { putAll(it) }
+                    GenerateLocationType.GLOBAL -> createProperties(configs, descriptor.homeDir).forEach { putAll(it) }
+                    GenerateLocationType.SYSTEM -> putAll(System.getProperties())
+                    GenerateLocationType.SYSTEM_ENV -> putAll(System.getenv())
+                }
+            }.filter { (key, value) ->
                 if (configs.isEnableExcludeNonStringValue)
                     key is CharSequence && key.isNotBlank() && value is CharSequence
                 else key.toString().isNotBlank() && value != null
-            }.mapKeys { e -> e.key.toString() }.filter { (key, _) ->
+            }.toStringMap().filter { (key, _) ->
                 configs.includeKeys.noEmpty()?.any { content ->
                     when (content) {
                         is Regex -> content.matches(key)
@@ -292,11 +293,11 @@ internal object PropertiesDeployHelper {
                     fun String.resolveValue(): String = replaceInterpolation { matchKey ->
                         if (resolveKeys.size > 5) SError.make("Key \"$key\" has been called recursively multiple times of those $resolveKeys")
                         resolveKeys.add(matchKey)
-                        val resolveValue = if (configs.isEnableValueInterpolation) resolveKeyValues[matchKey]?.toString() ?: "" else matchKey
+                        val resolveValue = if (configs.isEnableValueInterpolation) resolveKeyValues[matchKey] ?: "" else matchKey
                         if (resolveValue.hasInterpolation()) resolveValue.resolveValue()
                         else resolveValue
                     }
-                    if (value.toString().hasInterpolation()) resolveKeyValues[key] = value.toString().resolveValue()
+                    if (value.hasInterpolation()) resolveKeyValues[key] = value.resolveValue()
                 }; propteries.putAll(resolveKeyValues)
             }
         }; return propteries
@@ -338,12 +339,17 @@ internal object PropertiesDeployHelper {
     }
 
     /**
-     * 创建新的 [Properties]
+     * 创建新的 [Properties] 数组
      * @param configs 当前配置
      * @param dir 当前目录
-     * @return [Properties] or null
+     * @return [MutableList]<[Properties]>
      */
     private fun createProperties(configs: ISweetPropertyConfigs.IBaseGenerateConfigs, dir: File?) = runCatching {
-        Properties().apply { load(FileReader(dir?.resolve(configs.propertiesFileName)?.absolutePath?.parseFileSeparator() ?: "")) }
-    }.getOrNull()
+        mutableListOf<Properties>().apply {
+            configs.propertiesFileNames.forEach {
+                val propertiesFile = dir?.resolve(it)
+                if (propertiesFile?.exists() == true) add(Properties().apply { load(FileReader(propertiesFile.absolutePath)) })
+            }
+        }
+    }.getOrNull() ?: mutableListOf()
 }

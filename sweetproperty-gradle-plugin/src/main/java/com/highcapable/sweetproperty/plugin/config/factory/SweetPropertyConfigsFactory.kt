@@ -92,10 +92,10 @@ private fun SweetPropertyConfigureExtension.SourcesCodeGenerateConfigureExtensio
             ?: global?.isEnable
             ?: globalBase?.isEnable
             ?: DefaultConfigs.sourcesCodeGenerateConfigs(name, selfBase, globalBase).isEnable
-    override val propertiesFileName
-        get() = this@create.propertiesFileName.noBlank()
-            ?: global?.propertiesFileName?.noBlank()
-            ?: DefaultConfigs.sourcesCodeGenerateConfigs(name, selfBase, globalBase).propertiesFileName
+    override val propertiesFileNames
+        get() = this@create.propertiesFileNames
+            ?: global?.propertiesFileNames
+            ?: DefaultConfigs.sourcesCodeGenerateConfigs(name, selfBase, globalBase).propertiesFileNames
     override val permanentKeyValues
         get() = this@create.permanentKeyValues
             ?: global?.permanentKeyValues
@@ -159,10 +159,10 @@ private fun SweetPropertyConfigureExtension.BuildScriptGenerateConfigureExtensio
             ?: global?.isEnable
             ?: globalBase?.isEnable
             ?: DefaultConfigs.buildScriptGenerateConfigs(name, selfBase, globalBase).isEnable
-    override val propertiesFileName
-        get() = this@create.propertiesFileName.noBlank()
-            ?: global?.propertiesFileName?.noBlank()
-            ?: DefaultConfigs.buildScriptGenerateConfigs(name, selfBase, globalBase).propertiesFileName
+    override val propertiesFileNames
+        get() = this@create.propertiesFileNames
+            ?: global?.propertiesFileNames
+            ?: DefaultConfigs.buildScriptGenerateConfigs(name, selfBase, globalBase).propertiesFileNames
     override val permanentKeyValues
         get() = this@create.permanentKeyValues
             ?: global?.permanentKeyValues

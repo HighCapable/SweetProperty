@@ -120,8 +120,8 @@ internal interface ISweetPropertyConfigs {
         /** 是否为当前功能生成代码 */
         val isEnable: Boolean
 
-        /** 属性配置文件名称 */
-        val propertiesFileName: String
+        /** 属性配置文件名称数组 */
+        val propertiesFileNames: MutableList<String>
 
         /** 固定存在的属性键值数组 */
         val permanentKeyValues: MutableMap<String, Any>
