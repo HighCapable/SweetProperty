@@ -73,11 +73,6 @@ sweetProperty {
             // Enable functionality
             // You can set "sourcesCode" and "buildScript" respectively
             isEnable = true
-            // Set properties name
-            // In general, you don't need to modify this setting, the wrong file name will lead to getting empty key-values content
-            // If you have a properties file with a custom name, you can modify the settings here
-            // Note: It is recommended to configure each project individually, rather than modifying globally, in case of problems
-            propertiesFileName = "gradle.properties"
             // Whether to enable the exclusion of non-string type key-values content
             // Enabled by default, when enabled, key-values and content that are not string types will be excluded from the properties key-values
             // This can exclude e.g. configuration of some system environment variables or data in memory
@@ -96,7 +91,20 @@ sweetProperty {
             // will be automatically recognized and replaced
             // Note: The interpolated content will only be searching from the current (current configuration file) properties key-values list
             isEnableValueInterpolation = true
-            // Set a fixed attribute key-value array
+            // Set properties names array
+            // The properties file will be automatically obtained from the root directory of
+            // the current root project, subproject and user directory according to the file name you set
+            // You can add multiple sets of properties file names, which will be read in order
+            // In general, you don't need to modify this setting, the wrong file name will lead to getting empty key-values content
+            // You can configure the "isAddDefault" parameter to decide whether to add the default "gradle.properties" file name
+            // If you have one or more properties files with custom names, you can modify the settings here
+            // Note: It is recommended to configure each project individually, rather than modifying globally, in case of problems
+            propertiesFileNames(
+                "some_other_1.properties",
+                "some_other_2.properties",
+                isAddDefault = true
+            )
+            // Set fixed properties key-values array
             // Here you can set some key values that must exist,
             // and these key values will be generated regardless of whether they can be obtained from the properties key-values
             // These key-values use the content of the properties key-values when the properties key-values exists,
@@ -110,7 +118,7 @@ sweetProperty {
                 "permanent.some.key1" to "some_value_1",
                 "permanent.some.key2" to "some_value_2"
             )
-            // Set an array of properties key-values names that need to be excluded
+            // Set properties key-values array names that need to be excluded
             // Here you can set some key names that you want to exclude from the known properties keys
             // These keys are excluded when they exist in the properties keys and will not appear in the generated code
             // Note: If you exclude the key-values set in "permanentKeyValues",
@@ -119,6 +127,22 @@ sweetProperty {
             excludeKeys(
                 "exclude.some.key1",
                 "exclude.some.key2"
+            )
+            // Set properties key-values array names that need to be included
+            // Here you can set some key-values names that you want to include from known properties keys
+            // These keys are included when the properties key-values exists
+            // Key-values that are not included will not appear in the generated code
+            // You can pass in a Regex or use String.toRegex to use the regex function
+            includeKeys(
+                "include.some.key1",
+                "include.some.key2"
+            )
+            // Set properties key-values rules array
+            // You can set a set of key-values rules and use "createValueRule" to create new rules for parsing the obtained value content
+            // These key-values rules are applied when the properties key-values exists
+            keyValuesRules(
+                "some.key1" to createValueRule { if (it.contains("_")) it.replace("_", "-") else it },
+                "some.key2" to createValueRule { "$it-value" }
             )
             // Set where to generate properties key-values
             // Defaults to "CURRENT_PROJECT" and "ROOT_PROJECT"

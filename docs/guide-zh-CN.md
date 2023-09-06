@@ -70,11 +70,6 @@ sweetProperty {
             // 启用功能
             // 你可以分别对 "sourcesCode"、"buildScript" 进行设置
             isEnable = true
-            // 设置属性配置文件名称
-            // 一般情况下不需要修改此设置，错误的文件名将导致获取到空键值内容
-            // 如果你有一个自定义名称的属性键值文件，你可以修改这里的设置
-            // 注意：建议为每个项目单独配置，而不是在全局中修改，以防发生问题
-            propertiesFileName = "gradle.properties"
             // 是否启用排除非字符串类型键值内容
             // 默认启用，启用后将从属性键值中排除不是字符串类型的键值及内容
             // 这可以排除例如一些系统环境变量的配置或内存中的数据
@@ -90,6 +85,18 @@ sweetProperty {
             // 默认启用，启用后将自动识别属性键值内容中的 ${...} 内容并进行替换
             // 注意：插值的内容仅会从当前 (当前配置文件) 属性键值列表进行查找
             isEnableValueInterpolation = true
+            // 设置属性配置文件名称数组
+            // 属性配置文件将根据你设置的文件名称自动从当前根项目、子项目以及用户目录的根目录进行获取
+            // 你可以添加多组属性配置文件名称，将按照顺序依次进行读取
+            // 一般情况下不需要修改此设置，错误的文件名将导致获取到空键值内容
+            // 你可以配置 "isAddDefault" 参数来决定是否添加默认的 "gradle.properties" 文件名称
+            // 如果你有一个或多个自定义名称的属性键值文件，你可以修改这里的设置
+            // 注意：建议为每个项目单独配置，而不是在全局中修改，以防发生问题
+            propertiesFileNames(
+                "some_other_1.properties",
+                "some_other_2.properties",
+                isAddDefault = true
+            )
             // 设置固定存在的属性键值数组
             // 在这里可以设置一些一定存在的键值，这些键值无论能否从属性键值中得到都会进行生成
             // 这些键值在属性键值存在时使用属性键值的内容，不存在时使用这里设置的内容
@@ -110,6 +117,21 @@ sweetProperty {
             excludeKeys(
                 "exclude.some.key1",
                 "exclude.some.key2"
+            )
+            // 设置需要包含的属性键值名称数组
+            // 在这里可以设置一些你希望从已知的属性键值中包含的键值名称
+            // 这些键值在属性键值存在它们时被包含，未被包含的键值不会出现在生成的代码中
+            // 你可以传入 Regex 或使用 String.toRegex 以使用正则功能
+            includeKeys(
+                "include.some.key1",
+                "include.some.key2"
+            )
+            // 设置属性键值规则数组
+            // 你可以设置一组键值规则，使用 "createValueRule" 创建新的规则，用于解析得到的键值内容
+            // 这些键值规则在属性键值存在它们时被应用
+            keyValuesRules(
+                "some.key1" to createValueRule { if (it.contains("_")) it.replace("_", "-") else it },
+                "some.key2" to createValueRule { "$it-value" }
             )
             // 设置从何处生成属性键值
             // 默认为 "CURRENT_PROJECT" 和 "ROOT_PROJECT"
