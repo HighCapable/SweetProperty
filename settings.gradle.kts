@@ -1,4 +1,3 @@
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 pluginManagement {
     repositories {
         gradlePluginPortal()
@@ -21,10 +20,7 @@ sweetProperty {
             isEnableRestrictedAccess = true
         }
     }
-    rootProject { sourcesCode { isEnable = false } }
-    project("sweetproperty-gradle-plugin") {
-        buildScript { isEnableTypeAutoConversion = false }
-    }
+    rootProject { all { isEnable = false } }
 }
 rootProject.name = "SweetProperty"
 include(":sweetproperty-gradle-plugin")
