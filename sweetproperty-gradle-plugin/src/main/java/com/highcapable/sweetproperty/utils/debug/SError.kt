@@ -1,5 +1,5 @@
 /*
- * SweetProperty -  An easy get project properties anywhere Gradle plugin
+ * SweetProperty -  An easy get project properties anywhere Gradle plugin.
  * Copyright (C) 2019-2023 HighCapable
  * https://github.com/HighCapable/SweetProperty
  *
