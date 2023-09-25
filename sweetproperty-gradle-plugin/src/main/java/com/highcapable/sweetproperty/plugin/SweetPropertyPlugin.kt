@@ -46,6 +46,6 @@ class SweetPropertyPlugin<T : ExtensionAware> internal constructor() : Plugin<T>
                 rootProject.afterEvaluate { extension.onProjectEvaluate(rootProject) }
             }
         }
-        else -> SError.make("${SweetProperty.TAG} can only applied in settings.gradle/settings.gradle.kts, but current is $target")
+        else -> SError.make("${SweetProperty.TAG} can only applied in settings.gradle or settings.gradle.kts, but current is $target")
     }
 }
