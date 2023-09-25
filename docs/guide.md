@@ -208,13 +208,15 @@ sweetProperty {
             // Configure "buildScript"
         }
     }
-    // Sub-projects configuration
+    // Other projects and sub-projects configurations
     // Fill in the full name of the project that needs to be configured in the method parameters to configure the corresponding project
-    // If your project is a nested sub-projects, such as app → sub
-    // At this point you need to use ":" to separate multiple sub-projects, such as "app:sub"
-    // You don't need to fill in the ":" in front of the sub-projects, such as ":app"
+    // If the current project is a sub-project, you must fill in the ":" in front of the sub-project, such as ":app"
+    // If the current project is a nested sub-project, such as app → sub
+    // At this time you need to use ":" to separate multiple sub-projects, such as ":app:sub"
+    // Note: In version 1.0.2 and before, there is no need to add ":" to identify sub-projects, and an error will be thrown after adding it
+    //       This is a wrong approach, Gradle's project naming convention is currently unified, please use the new convention
     // The name of the root project cannot be used directly to configure sub-projects, please use "rootProject"
-    project("app") {
+    project(":app") {
         all {
             // Configure "all"
         }
