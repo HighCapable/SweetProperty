@@ -19,7 +19,7 @@
  *
  * This file is created by fankes on 2023/8/25.
  */
-@file:Suppress("unused", "MemberVisibilityCanBePrivate", "PropertyName")
+@file:Suppress("unused", "MemberVisibilityCanBePrivate", "PropertyName", "DeprecatedCallableAddReplaceWith")
 
 package com.highcapable.sweetproperty.plugin.extension.dsl.configure
 
@@ -123,6 +123,16 @@ open class SweetPropertyConfigureExtension internal constructor() {
 
         /** 当前构建脚本生成代码功能配置实例 */
         internal var buildScriptConfigure: BuildScriptGenerateConfigureExtension? = null
+
+        /**
+         * 错误的调用会导致关闭整个插件的功能
+         *
+         * 请使用 [all]、[sourcesCode]、[buildScript]
+         * @throws [IllegalStateException]
+         */
+        @Deprecated(message = "Do not use", level = DeprecationLevel.ERROR)
+        val isEnable: Boolean
+            get() = SError.make("Please called all { isEnable = ... }, sourcesCode { isEnable = ... }, buildScript { isEnable = ... }")
 
         /**
          * 配置通用生成代码功能
