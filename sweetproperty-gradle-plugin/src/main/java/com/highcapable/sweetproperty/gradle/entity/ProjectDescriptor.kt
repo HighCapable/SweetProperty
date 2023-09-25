@@ -43,11 +43,12 @@ internal class ProjectDescriptor private constructor() {
          * @return [ProjectDescriptor]
          */
         internal fun create(settings: Settings, name: String = "") = ProjectDescriptor().also {
-            val isRootProject = name.isBlank() || name == settings.rootProject.name
+            val isRootProject = name.isBlank() || name.lowercase() == settings.rootProject.name.lowercase()
+            val subProjectNotice = "if this is a sub-project, please set it like \":$name\""
             it.type = Type.SETTINGS
             it.name = name.noBlank() ?: settings.rootProject.name
-            it.currentDir = (if (isRootProject) settings.rootProject else settings.findProject(":$name"))?.projectDir
-                ?: SError.make("Project \"$name\" not found")
+            it.currentDir = (if (isRootProject) settings.rootProject else settings.findProject(name))?.projectDir
+                ?: SError.make("Project \"$name\" not found${if (name.startsWith(":").not()) ", $subProjectNotice" else ""}")
             it.rootDir = settings.rootDir
             it.homeDir = settings.gradle.gradleUserHomeDir
         }
@@ -59,7 +60,7 @@ internal class ProjectDescriptor private constructor() {
          */
         internal fun create(project: Project) = ProjectDescriptor().also {
             it.type = Type.PROJECT
-            it.name = project.fullName
+            it.name = project.fullName()
             it.currentDir = project.projectDir
             it.rootDir = project.rootDir
             it.homeDir = project.gradle.gradleUserHomeDir

@@ -207,11 +207,11 @@ internal object PropertiesDeployHelper {
             val outputDir = file(configs.generateDirPath)
             if (configs.isEnable.not()) return
             val properties = generatedProperties(configs, ProjectDescriptor.create(project = this))
-            if (isConfigsModified.not() && properties == cachedProjectProperties[fullName] && outputDir.isEmpty().not()) {
+            if (isConfigsModified.not() && properties == cachedProjectProperties[fullName()] && outputDir.isEmpty().not()) {
                 if (configs.isEnable) configureSourceSets(project = this)
                 return
             }; outputDir.apply { if (exists()) deleteRecursively() }
-            cachedProjectProperties[fullName] = properties
+            cachedProjectProperties[fullName()] = properties
             val packageName = generatedPackageName(configs, project = this)
             val className = generatedClassName(configs, project = this)
             sourcesGenerator.build(configs, properties, packageName, className).writeTo(outputDir)
@@ -323,7 +323,7 @@ internal object PropertiesDeployHelper {
         val packageName = configs.packageName.noBlank()
             ?: project.namespace()
             ?: project.group.toString().noBlank()
-            ?: "$DEFAULT_PACKAGE_NAME.${project.fullName.replace(":", "").flatted()}"
+            ?: "$DEFAULT_PACKAGE_NAME.${project.fullName(isUseColon = false).replace(":", "").flatted()}"
         return "$packageName.generated"
     }
 
@@ -335,7 +335,7 @@ internal object PropertiesDeployHelper {
      */
     private fun generatedClassName(configs: ISweetPropertyConfigs.ISourcesCodeGenerateConfigs, project: Project): String {
         val className = configs.className.noBlank()
-            ?: project.fullName.replace(":", "_").uppercamelcase().noBlank()
+            ?: project.fullName(isUseColon = false).replace(":", "_").uppercamelcase().noBlank()
             ?: "Undefined"
         return "${className.uppercamelcase()}Properties"
     }

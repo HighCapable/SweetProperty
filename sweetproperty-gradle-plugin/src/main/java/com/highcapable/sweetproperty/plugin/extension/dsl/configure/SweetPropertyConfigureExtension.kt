@@ -92,14 +92,23 @@ open class SweetPropertyConfigureExtension internal constructor() {
      * 配置根项目
      * @param action 配置方法体
      */
-    fun rootProject(action: Action<SubConfigureExtension>) = project(ROOT_PROJECT_TAG, action)
+    fun rootProject(action: Action<SubConfigureExtension>) = configureProject(ROOT_PROJECT_TAG, action, isLowercase = false)
 
     /**
      * 配置指定项目
      * @param name 项目完整名称
      * @param action 配置方法体
      */
-    fun project(name: String, action: Action<SubConfigureExtension>) = action.execute(SubConfigureExtension().also { projectConfigures[name] = it })
+    fun project(name: String, action: Action<SubConfigureExtension>) = configureProject(name, action)
+
+    /**
+     * 配置项目
+     * @param name 项目完整名称
+     * @param action 配置方法体
+     * @param isLowercase 是否转换 [name] 为小写 - 默认是
+     */
+    private fun configureProject(name: String, action: Action<SubConfigureExtension>, isLowercase: Boolean = true) =
+        action.execute(SubConfigureExtension().also { projectConfigures[if (isLowercase) name.lowercase() else name] = it })
 
     /**
      * 子配置方法体实现类
@@ -483,14 +492,14 @@ open class SweetPropertyConfigureExtension internal constructor() {
         val currentGlobal = globalConfigure.create()
         val currentProjects = mutableMapOf<String, ISweetPropertyConfigs.ISubConfigs>()
         val rootName = settings.rootProject.name
-        if (projectConfigures.containsKey(rootName))
+        if (projectConfigures.containsKey(rootName.lowercase()))
             SError.make("This name \"$rootName\" is a root project, please use rootProject function to configure it, not project(\"$rootName\")")
         if (projectConfigures.containsKey(ROOT_PROJECT_TAG)) {
-            projectConfigures[rootName] = projectConfigures[ROOT_PROJECT_TAG] ?: SError.make("Internal error")
+            projectConfigures[rootName.lowercase()] = projectConfigures[ROOT_PROJECT_TAG] ?: SError.make("Internal error")
             projectConfigures.remove(ROOT_PROJECT_TAG)
         }
         projectConfigures.forEach { (name, subConfigure) ->
-            name.checkingStartWithLetter(description = "Project")
+            name.replaceFirst(":", "").checkingStartWithLetter(description = "Project")
             subConfigure.checkingNames()
             currentProjects[name] = subConfigure.create(name, globalConfigure)
         }; return object : ISweetPropertyConfigs {

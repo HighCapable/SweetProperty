@@ -33,7 +33,7 @@ import org.gradle.api.Project
  * @param project 当前项目
  * @return [ISweetPropertyConfigs.ISubConfigs]
  */
-internal fun ISweetPropertyConfigs.with(project: Project) = projects[project.fullName] ?: global
+internal fun ISweetPropertyConfigs.with(project: Project) = projects[project.fullName()] ?: global
 
 /**
  * 创建 [ISweetPropertyConfigs.ISubConfigs] 实例
