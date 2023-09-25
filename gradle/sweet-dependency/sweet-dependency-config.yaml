@@ -18,6 +18,9 @@ plugins:
     version: 0.25.3
 
 libraries:
+  com.squareup.okhttp3:
+    okhttp:
+      version: 4.11.0
   com.squareup:
     kotlinpoet:
       version: 1.14.2

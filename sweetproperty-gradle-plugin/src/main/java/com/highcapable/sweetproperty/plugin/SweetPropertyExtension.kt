@@ -25,6 +25,7 @@ import com.highcapable.sweetproperty.SweetProperty
 import com.highcapable.sweetproperty.gradle.factory.getOrCreate
 import com.highcapable.sweetproperty.gradle.proxy.IGradleLifecycle
 import com.highcapable.sweetproperty.plugin.extension.dsl.configure.SweetPropertyConfigureExtension
+import com.highcapable.sweetproperty.plugin.helper.PluginUpdateHelper
 import com.highcapable.sweetproperty.plugin.helper.PropertiesDeployHelper
 import com.highcapable.sweetproperty.utils.debug.SError
 import org.gradle.api.Project
@@ -44,6 +45,7 @@ internal class SweetPropertyExtension internal constructor() : IGradleLifecycle 
 
     override fun onSettingsEvaluate(settings: Settings) {
         val configs = configure?.build(settings) ?: SError.make("Extension \"${SweetPropertyConfigureExtension.NAME}\" create failed")
+        PluginUpdateHelper.checkingForUpdate(settings)
         PropertiesDeployHelper.initialize(settings, configs)
     }
 
