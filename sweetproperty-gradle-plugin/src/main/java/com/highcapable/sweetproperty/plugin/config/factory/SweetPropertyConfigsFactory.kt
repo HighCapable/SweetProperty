@@ -47,12 +47,12 @@ internal fun SweetPropertyConfigureExtension.SubConfigureExtension.create(
 ) = object : ISweetPropertyConfigs.ISubConfigs {
     override val sourcesCode
         get() = this@create.sourcesCodeConfigure?.create(name, global.sourcesCodeConfigure, this@create.allConfigure, global.allConfigure)
-            ?: global.sourcesCodeConfigure?.create(name, globalBase = global.allConfigure)
-            ?: DefaultConfigs.subConfigs(name, global.allConfigure).sourcesCode
+            ?: global.sourcesCodeConfigure?.create(name, globalBase = this@create.allConfigure ?: global.allConfigure)
+            ?: DefaultConfigs.subConfigs(name, base = this@create.allConfigure ?: global.allConfigure).sourcesCode
     override val buildScript
         get() = this@create.buildScriptConfigure?.create(name, global.buildScriptConfigure, this@create.allConfigure, global.allConfigure)
-            ?: global.buildScriptConfigure?.create(name, globalBase = global.allConfigure)
-            ?: DefaultConfigs.subConfigs(name, global.allConfigure).buildScript
+            ?: global.buildScriptConfigure?.create(name, globalBase = this@create.allConfigure ?: global.allConfigure)
+            ?: DefaultConfigs.subConfigs(name, base = this@create.allConfigure ?: global.allConfigure).buildScript
 }
 
 /**
