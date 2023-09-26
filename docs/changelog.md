@@ -18,3 +18,13 @@
 - Added `propertiesFileNames` method, now you can set a group of properties file names at the same time
 - Added `includeKeys` method, now you can set an array of properties key names to include only
 - Added `keyValuesRules` method, now you can modify the actual parsing result of the value content during the properties key-values loading process
+
+## 1.0.3 | 2023.09.26
+
+- The automatic code generation function will always output source code files to facilitate debugging when the generation fails
+- Fix Gradle lifecycle problem
+- Fix root project was recognized as two projects after the case was changed
+- Fix `all` function of the sub-project fails after using other configuration functions in the global configuration
+- Improve and adopt Gradle project naming convention
+- Added plugin own update function
+- Some other functional improvements
