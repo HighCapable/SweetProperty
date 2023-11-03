@@ -40,6 +40,7 @@ import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.annotation.Nonnull
 import javax.lang.model.element.Modifier
 import kotlin.properties.Delegates
 
@@ -180,6 +181,7 @@ internal class PropertiesAccessorsGenerator {
             MethodSpec.methodBuilder("get${methodName.capitalize()}")
                 .addJavadoc("Resolve the \"$accessorsName\" accessors")
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addAnnotation(Nonnull::class.java)
                 .returns(className.capitalized().asClassType())
                 .addStatement("return ${className.uncapitalized()}")
                 .build()
@@ -198,6 +200,7 @@ internal class PropertiesAccessorsGenerator {
                 val typedValue = value.parseTypedValue(configs.isEnableTypeAutoConversion)
                 addJavadoc("Resolve the \"$accessorsName\" value ${typedValue.second}")
                 addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                    .addAnnotation(Nonnull::class.java)
                     .returns(typedValue.first.java)
                     .addStatement("return ${typedValue.second}")
             }.build()
@@ -380,10 +383,15 @@ internal class PropertiesAccessorsGenerator {
      */
     internal val compileStubFiles get(): List<JavaFile> {
         val stubFiles = mutableListOf<JavaFile>()
+        val nonnullFile =
+            TypeSpec.annotationBuilder(Nonnull::class.java.simpleName)
+                .addModifiers(Modifier.PUBLIC)
+                .build().createJavaFile(Nonnull::class.java.packageName)
         val iExtensionAccessorsFile =
             TypeSpec.interfaceBuilder(IExtensionAccessors::class.java.simpleName)
                 .addModifiers(Modifier.PUBLIC)
                 .build().createJavaFile(IExtensionAccessors::class.java.packageName)
+        stubFiles.add(nonnullFile)
         stubFiles.add(iExtensionAccessorsFile)
         return stubFiles
     }
