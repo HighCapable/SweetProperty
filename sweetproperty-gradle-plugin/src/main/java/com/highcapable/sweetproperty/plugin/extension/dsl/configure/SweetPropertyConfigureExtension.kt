@@ -95,11 +95,11 @@ open class SweetPropertyConfigureExtension internal constructor() {
     fun rootProject(action: Action<SubConfigureExtension>) = configureProject(ROOT_PROJECT_TAG, action)
 
     /**
-     * 配置指定项目
-     * @param name 项目完整名称
+     * 配置指定项目 (数组)
+     * @param names 项目完整名称 (数组)
      * @param action 配置方法体
      */
-    fun project(name: String, action: Action<SubConfigureExtension>) = configureProject(name, action)
+    fun project(vararg names: String, action: Action<SubConfigureExtension>) = names.forEach { configureProject(it, action) }
 
     /**
      * 配置项目
