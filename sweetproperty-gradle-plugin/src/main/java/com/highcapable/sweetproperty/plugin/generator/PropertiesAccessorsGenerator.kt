@@ -85,6 +85,9 @@ internal class PropertiesAccessorsGenerator {
     /** 生成的属性键值连续名称重复次数数组 */
     private val grandSuccessiveDuplicateIndexs = mutableMapOf<String, Int>()
 
+    /** 生成的属性键值不重复调用方法数组 */
+    private val usedSuccessiveMethods = mutableMapOf<String, MutableList<String>>()
+
     /** 生成的属性键值不重复 TAG 数组 */
     private val usedSuccessiveTags = mutableSetOf<String>()
 
@@ -178,7 +181,7 @@ internal class PropertiesAccessorsGenerator {
      */
     private fun TypeSpec.Builder.addSuccessiveMethod(accessorsName: String, methodName: String, className: String) =
         addMethod(
-            MethodSpec.methodBuilder("get${methodName.capitalize()}")
+            MethodSpec.methodBuilder("get${getOrCreateUsedSuccessiveMethodName(methodName, className).capitalize()}")
                 .addJavadoc("Resolve the \"$accessorsName\" accessors")
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addAnnotation(Nonnull::class.java)
@@ -191,12 +194,13 @@ internal class PropertiesAccessorsGenerator {
      * 向通用构建器描述类添加最终键值方法
      * @param accessorsName 接续名
      * @param methodName 方法名
+     * @param className 类名
      * @param value 键值内容
      * @return [TypeSpec.Builder]
      */
-    private fun TypeSpec.Builder.addFinalValueMethod(accessorsName: String, methodName: String, value: Any) =
+    private fun TypeSpec.Builder.addFinalValueMethod(accessorsName: String, methodName: String, className: String, value: Any) =
         addMethod(
-            MethodSpec.methodBuilder("get${methodName.capitalize()}").apply {
+            MethodSpec.methodBuilder("get${getOrCreateUsedSuccessiveMethodName(methodName, className).capitalize()}").apply {
                 val typedValue = value.parseTypedValue(configs.isEnableTypeAutoConversion)
                 addJavadoc("Resolve the \"$accessorsName\" value ${typedValue.second}")
                 addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -213,6 +217,20 @@ internal class PropertiesAccessorsGenerator {
      */
     private fun MethodSpec.Builder.addSuccessiveStatement(className: String) =
         addStatement("${className.uncapitalized()} = new ${className.capitalized()}()")
+
+    /**
+     * 获取不重复调用方法名称
+     * @param methodName 方法名
+     * @param className 类名
+     * @return [String]
+     */
+    private fun getOrCreateUsedSuccessiveMethodName(methodName: String, className: String): String {
+        if (usedSuccessiveMethods[className] == null) usedSuccessiveMethods[className] = mutableListOf()
+        val methods = usedSuccessiveMethods[className]!!
+        val finalName = if (methods.contains(methodName)) "$methodName${methods.filter { it == methodName }.size + 1}" else methodName
+        methods.add(methodName)
+        return finalName
+    }
 
     /**
      * 获取、创建通用构建器描述类
@@ -282,9 +300,10 @@ internal class PropertiesAccessorsGenerator {
             val nextAccessorsName = nextItem?.first ?: ""
             val nextClassName = nextItem?.second ?: ""
             val nextMethodName = nextItem?.third ?: ""
+            val lastClassName = lastItem?.second ?: ""
             val lastMethodName = lastItem?.third ?: ""
             val isPreLastIndex = index == successiveNames.lastIndex - 1
-            if (successiveNames.size == 1) getOrCreateClassSpec(TOP_SUCCESSIVE_NAME).addFinalValueMethod(successiveName, methodName, value)
+            if (successiveNames.size == 1) getOrCreateClassSpec(TOP_SUCCESSIVE_NAME).addFinalValueMethod(successiveName, methodName, className, value)
             if (index == successiveNames.lastIndex) return@forEachIndexed
             if (index == 0) noRepeated(TOP_SUCCESSIVE_NAME, methodName, className) {
                 getOrCreateClassSpec(TOP_SUCCESSIVE_NAME, accessorsName)
@@ -297,7 +316,7 @@ internal class PropertiesAccessorsGenerator {
                     if (isPreLastIndex.not()) {
                         addSuccessiveField(nextAccessorsName, nextClassName)
                         addSuccessiveMethod(nextAccessorsName, nextMethodName, nextClassName)
-                    } else addFinalValueMethod(successiveName, lastMethodName, value)
+                    } else addFinalValueMethod(successiveName, lastMethodName, lastClassName, value)
                 }
                 if (isPreLastIndex.not()) preAddConstructorSpecNames.add(className to nextClassName)
             }
@@ -345,6 +364,7 @@ internal class PropertiesAccessorsGenerator {
         preAddConstructorSpecNames.clear()
         grandSuccessiveNames.clear()
         grandSuccessiveDuplicateIndexs.clear()
+        usedSuccessiveMethods.clear()
         usedSuccessiveTags.clear()
         if (isClearAll) memoryExtensionClasses.clear()
     }
