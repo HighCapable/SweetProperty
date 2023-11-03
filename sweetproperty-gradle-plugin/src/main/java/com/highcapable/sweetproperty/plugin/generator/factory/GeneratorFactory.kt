@@ -30,6 +30,12 @@ internal typealias PropertyMap = MutableMap<String, Any>
 internal typealias PropertyValueRule = (value: String) -> String
 
 /**
+ * 移除键值内容自动转换类型的引号
+ * @return [String]
+ */
+internal fun String.removeAutoConversion() = removeSurrounding("\"").removeSurrounding("'")
+
+/**
  * 解析到键值内容类型
  * @param isAutoConversion 是否自动转换类型
  * @return [Pair]<[KClass], [String]>

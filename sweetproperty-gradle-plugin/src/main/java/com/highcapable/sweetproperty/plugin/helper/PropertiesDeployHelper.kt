@@ -36,6 +36,7 @@ import com.highcapable.sweetproperty.plugin.config.type.GenerateLocationType
 import com.highcapable.sweetproperty.plugin.generator.PropertiesAccessorsGenerator
 import com.highcapable.sweetproperty.plugin.generator.PropertiesSourcesGenerator
 import com.highcapable.sweetproperty.plugin.generator.factory.PropertyMap
+import com.highcapable.sweetproperty.plugin.generator.factory.removeAutoConversion
 import com.highcapable.sweetproperty.utils.camelcase
 import com.highcapable.sweetproperty.utils.code.entity.MavenPomData
 import com.highcapable.sweetproperty.utils.code.factory.compile
@@ -293,7 +294,8 @@ internal object PropertiesDeployHelper {
                     fun String.resolveValue(): String = replaceInterpolation { matchKey ->
                         if (resolveKeys.size > 5) SError.make("Key \"$key\" has been called recursively multiple times of those $resolveKeys")
                         resolveKeys.add(matchKey)
-                        val resolveValue = if (configs.isEnableValueInterpolation) resolveKeyValues[matchKey] ?: "" else matchKey
+                        var resolveValue = if (configs.isEnableValueInterpolation) resolveKeyValues[matchKey] ?: "" else matchKey
+                        resolveValue = resolveValue.removeAutoConversion()
                         if (resolveValue.hasInterpolation()) resolveValue.resolveValue()
                         else resolveValue
                     }
