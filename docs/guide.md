@@ -227,7 +227,20 @@ sweetProperty {
             // Configure "buildScript"
         }
     }
-}
+    // Configure multiple projects and sub-projects at the same time
+    // Fill in the method parameters with the array of complete names of the projects that need to be configured
+    // to configure each corresponding project
+    project(":modules:library1", ":modules:library2") {
+        all {
+            // Configure "all"
+        }
+        sourcesCode {
+            // Configure "sourcesCode"
+        }
+        buildScript {
+            // Configure "buildScript"
+        }
+    }
 ```
 
 If you want to use it in Groovy DSL, please change the `=` of all variables to spaces, delete the `is` in front of `Enable` and lowercase `E`.

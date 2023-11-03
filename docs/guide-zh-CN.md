@@ -213,6 +213,19 @@ sweetProperty {
             // 配置 "buildScript"
         }
     }
+    // 同时进行多个项目与子项目配置
+    // 在方法参数中填入需要配置的项目完整名称数组来配置每个对应的项目
+    project(":modules:library1", ":modules:library2") {
+        all {
+            // 配置 "all"
+        }
+        sourcesCode {
+            // 配置 "sourcesCode"
+        }
+        buildScript {
+            // 配置 "buildScript"
+        }
+    }
 }
 ```
 
