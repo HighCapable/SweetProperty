@@ -52,7 +52,7 @@ internal fun Any.parseTypedValue(isAutoConversion: Boolean): Pair<KClass<*>, Str
                 it.drop(1).dropLast(1)
             } else it.replace("\"", "\\\"")
         }
-    if (isAutoConversion.not()) return Pair(String::class, "\"$valueString\"")
+    if (!isAutoConversion) return Pair(String::class, "\"$valueString\"")
     val typeSpec = when {
         isStringType -> String::class
         valueString.trim().toIntOrNull() != null -> Int::class
@@ -62,6 +62,6 @@ internal fun Any.parseTypedValue(isAutoConversion: Boolean): Pair<KClass<*>, Str
         valueString.trim() == "true" || valueString.trim() == "false" -> Boolean::class
         else -> String::class
     }; return Pair(typeSpec, if (typeSpec == String::class) "\"$valueString\"" else valueString.let {
-        if (typeSpec == Long::class && it.endsWith("L").not()) "${it}L" else it
+        if (typeSpec == Long::class && !it.endsWith("L")) "${it}L" else it
     })
 }

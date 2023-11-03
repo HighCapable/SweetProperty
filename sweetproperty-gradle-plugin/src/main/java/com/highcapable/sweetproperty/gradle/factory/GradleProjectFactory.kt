@@ -44,7 +44,7 @@ internal fun Project.fullName(isUseColon: Boolean = true): String {
         project.parent?.also { if (it != it.rootProject) fetchChild(it) }
         baseNames.add(project.name)
     }; fetchChild(project = this)
-    return buildString { baseNames.onEach { append(":$it") }.clear() }.let { if (isUseColon && isRoot.not()) it else it.drop(1) }
+    return buildString { baseNames.onEach { append(":$it") }.clear() }.let { if (isUseColon && !isRoot) it else it.drop(1) }
 }
 
 /**

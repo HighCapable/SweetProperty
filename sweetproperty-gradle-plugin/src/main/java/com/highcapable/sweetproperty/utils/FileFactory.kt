@@ -52,7 +52,7 @@ internal fun String.parseUnixFileSeparator() = replace("\\", "/")
  * - 如果文件不存在 - 返回 true
  * @return [Boolean]
  */
-internal fun File.isEmpty() = exists().not() || isDirectory.not() || listFiles().isNullOrEmpty()
+internal fun File.isEmpty() = !exists() || !isDirectory || listFiles().isNullOrEmpty()
 
 /** 删除目录下的空子目录 */
 internal fun File.deleteEmptyRecursively() {

@@ -103,7 +103,7 @@ internal object PropertiesDeployHelper {
     internal fun initialize(settings: Settings, configs: ISweetPropertyConfigs) {
         this.configs = configs
         checkingConfigsModified(settings)
-        if (configs.isEnable.not()) return
+        if (!configs.isEnable) return
         generatedAccessors(settings)
     }
 
@@ -112,7 +112,7 @@ internal object PropertiesDeployHelper {
      * @param rootProject 当前根项目
      */
     internal fun resolve(rootProject: Project) {
-        if (configs.isEnable.not()) return
+        if (!configs.isEnable) return
         resolveAccessors(rootProject)
     }
 
@@ -121,7 +121,7 @@ internal object PropertiesDeployHelper {
      * @param rootProject 当前根项目
      */
     internal fun deploy(rootProject: Project) {
-        if (configs.isEnable.not()) return
+        if (!configs.isEnable) return
         deployAccessors(rootProject)
         deploySourcesCode(rootProject)
     }
@@ -153,13 +153,13 @@ internal object PropertiesDeployHelper {
             allConfigs.add(configs.global.buildScript)
         }
         configs.projects.forEach { (name, subConfigs) ->
-            if (subConfigs.buildScript.isEnable.not()) return@forEach
+            if (!subConfigs.buildScript.isEnable) return@forEach
             allProperties.add(generatedProperties(subConfigs.buildScript, ProjectDescriptor.create(settings, name)))
             allConfigs.add(subConfigs.buildScript)
         }
-        if (isConfigsModified.not() &&
+        if (!isConfigsModified &&
             allProperties == cachedSettingsProperties &&
-            accessorsDir.resolve(accessorsPomData.relativePomPath).isEmpty().not()
+            !accessorsDir.resolve(accessorsPomData.relativePomPath).isEmpty()
         ) return
         cachedSettingsProperties = allProperties
         accessorsGenerator.build(allConfigs, allProperties).compile(accessorsPomData, accessorsDir.absolutePath, accessorsGenerator.compileStubFiles)
@@ -170,7 +170,7 @@ internal object PropertiesDeployHelper {
      * @param rootProject 当前根项目
      */
     private fun resolveAccessors(rootProject: Project) {
-        if (accessorsDir.resolve(accessorsPomData.relativePomPath).isEmpty().not())
+        if (!accessorsDir.resolve(accessorsPomData.relativePomPath).isEmpty())
             rootProject.addDependencyToBuildScript(accessorsDir.absolutePath, accessorsPomData)
     }
 
@@ -182,7 +182,7 @@ internal object PropertiesDeployHelper {
         /** 部署扩展方法 */
         fun Project.deploy() {
             val configs = configs.with(this).buildScript
-            if (configs.isEnable.not()) return
+            if (!configs.isEnable) return
             val className = accessorsGenerator.propertiesClass(configs.name)
             val accessorsClass = loadBuildScriptClass(className) ?: SError.make(
                 """
@@ -206,9 +206,9 @@ internal object PropertiesDeployHelper {
         fun Project.generate() {
             val configs = configs.with(this).sourcesCode
             val outputDir = file(configs.generateDirPath)
-            if (configs.isEnable.not()) return
+            if (!configs.isEnable) return
             val properties = generatedProperties(configs, ProjectDescriptor.create(project = this))
-            if (isConfigsModified.not() && properties == cachedProjectProperties[fullName()] && outputDir.isEmpty().not()) {
+            if (!isConfigsModified && properties == cachedProjectProperties[fullName()] && !outputDir.isEmpty()) {
                 if (configs.isEnable) configureSourceSets(project = this)
                 return
             }; outputDir.apply { if (exists()) deleteRecursively() }

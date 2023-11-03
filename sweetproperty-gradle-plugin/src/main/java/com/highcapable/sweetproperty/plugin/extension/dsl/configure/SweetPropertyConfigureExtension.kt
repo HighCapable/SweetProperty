@@ -474,13 +474,13 @@ open class SweetPropertyConfigureExtension internal constructor() {
 
         /** 检查合法包名 */
         fun String.checkingValidPackageName() {
-            if (isNotBlank() && matches("^[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)*$".toRegex()).not())
+            if (isNotBlank() && !matches("^[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)*$".toRegex()))
                 SError.make("Invalid package name \"$this\"")
         }
 
         /** 检查合法类名 */
         fun String.checkingValidClassName() {
-            if (isNotBlank() && matches("^[a-zA-Z][a-zA-Z0-9_]*$".toRegex()).not())
+            if (isNotBlank() && !matches("^[a-zA-Z][a-zA-Z0-9_]*$".toRegex()))
                 SError.make("Invalid class name \"$this\"")
         }
 

@@ -98,7 +98,7 @@ internal class PropertiesAccessorsGenerator {
      */
     private inline fun noRepeated(vararg tags: String, block: () -> Unit) {
         val allTag = tags.joinToString("-")
-        if (usedSuccessiveTags.contains(allTag).not()) block()
+        if (!usedSuccessiveTags.contains(allTag)) block()
         usedSuccessiveTags.add(allTag)
     }
 
@@ -313,12 +313,12 @@ internal class PropertiesAccessorsGenerator {
             }
             noRepeated(className, nextMethodName, nextClassName) {
                 getOrCreateClassSpec(className, accessorsName).apply {
-                    if (isPreLastIndex.not()) {
+                    if (!isPreLastIndex) {
                         addSuccessiveField(nextAccessorsName, nextClassName)
                         addSuccessiveMethod(nextAccessorsName, nextMethodName, nextClassName)
                     } else addFinalValueMethod(successiveName, lastMethodName, lastClassName, value)
                 }
-                if (isPreLastIndex.not()) preAddConstructorSpecNames.add(className to nextClassName)
+                if (!isPreLastIndex) preAddConstructorSpecNames.add(className to nextClassName)
             }
         }
     }
