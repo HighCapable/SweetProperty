@@ -12,7 +12,7 @@ repositories:
 plugins:
   org.jetbrains.kotlin.jvm:
     alias: kotlin-jvm
-    version: 1.9.10
+    version: 1.9.20
   com.vanniktech.maven.publish:
     alias: maven-publish
     version: 0.25.3
@@ -20,7 +20,7 @@ plugins:
 libraries:
   com.squareup.okhttp3:
     okhttp:
-      version: 4.11.0
+      version: 4.12.0
   com.squareup:
     kotlinpoet:
       version: 1.14.2
