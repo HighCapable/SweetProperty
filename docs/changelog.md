@@ -28,3 +28,11 @@
 - Improve and adopt Gradle project naming convention
 - Added plugin own update function
 - Some other functional improvements
+
+## 1.0.4 | 2023.11.04
+
+- Fix the issue where attribute key value names like `a=some` and `a_b=some` would cause duplicate method names
+- Fix the problem that the interpolation content generated using `${...}` still carries string type quotes
+- Generated code is marked with `@Nonnull` to make it recognized as a non-null return type in Kotlin DSL scripts
+- Added `project(...)` configuration method to support configuring multiple projects at the same time
+- Some other functional improvements
