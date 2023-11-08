@@ -36,3 +36,7 @@
 - Generated code is marked with `@Nonnull` to make it recognized as a non-null return type in Kotlin DSL scripts
 - Added `project(...)` configuration method to support configuring multiple projects at the same time
 - Some other functional improvements
+
+## 1.0.5 | 2023.11.08
+
+- Fix a serious issue that caused code generation failure when encountering special characters and duplicate key-value names
