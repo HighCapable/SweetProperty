@@ -21,10 +21,14 @@
  */
 package com.highcapable.sweetproperty.plugin.generator.factory
 
+import com.highcapable.sweetproperty.utils.underscore
 import kotlin.reflect.KClass
 
 /** 属性键值数组类型定义 */
 internal typealias PropertyMap = MutableMap<String, Any>
+
+/** 属性键值优化数组类型定义 */
+internal typealias PropertyOptimizeMap = MutableMap<String, Pair<String, Any>>
 
 /** 属性键值规则类型定义 */
 internal typealias PropertyValueRule = (value: String) -> String
@@ -64,4 +68,34 @@ internal fun Any.parseTypedValue(isAutoConversion: Boolean): Pair<KClass<*>, Str
     }; return Pair(typeSpec, if (typeSpec == String::class) "\"$valueString\"" else valueString.let {
         if (typeSpec == Long::class && !it.endsWith("L")) "${it}L" else it
     })
+}
+
+/**
+ * [PropertyMap] 转换到 [PropertyOptimizeMap]
+ *
+ * 替换可能的键值名称特殊字符内容并保留原始键值名称
+ * @return [PropertyOptimizeMap]
+ */
+internal fun PropertyMap.toOptimize(): PropertyOptimizeMap {
+    val newMap: PropertyOptimizeMap = mutableMapOf()
+    var uniqueNumber = 1
+    forEach { (key, value) ->
+        var newKey = key.replace("\\W".toRegex(), "_")
+        while (newMap.containsKey(newKey)) newKey = "$newKey${++uniqueNumber}"
+        newMap[newKey] = key to value
+    }; return newMap
+}
+
+/**
+ * [PropertyOptimizeMap] 转换为大写下划线命名
+ * @return [PropertyOptimizeMap]
+ */
+internal fun PropertyOptimizeMap.toUnderscores(): PropertyOptimizeMap {
+    val newMap: PropertyOptimizeMap = mutableMapOf()
+    var uniqueNumber = 1
+    forEach { (key, value) ->
+        var newKey = key.underscore()
+        while (newMap.containsKey(newKey)) newKey = "$newKey${++uniqueNumber}"
+        newMap[newKey] = value.first to value.second
+    }; return newMap
 }

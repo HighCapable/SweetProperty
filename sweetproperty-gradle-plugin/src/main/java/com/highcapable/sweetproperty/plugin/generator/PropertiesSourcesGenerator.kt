@@ -25,9 +25,10 @@ import com.highcapable.sweetproperty.SweetProperty
 import com.highcapable.sweetproperty.plugin.config.proxy.ISweetPropertyConfigs
 import com.highcapable.sweetproperty.plugin.generator.factory.PropertyMap
 import com.highcapable.sweetproperty.plugin.generator.factory.parseTypedValue
+import com.highcapable.sweetproperty.plugin.generator.factory.toOptimize
+import com.highcapable.sweetproperty.plugin.generator.factory.toUnderscores
 import com.highcapable.sweetproperty.utils.debug.SError
 import com.highcapable.sweetproperty.utils.firstNumberToLetter
-import com.highcapable.sweetproperty.utils.underscore
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
@@ -67,13 +68,13 @@ internal class PropertiesSourcesGenerator {
                     """.trimIndent()
                 )
                 if (configs.isEnableRestrictedAccess) addModifiers(KModifier.INTERNAL)
-                keyValues.forEach { (key, value) ->
-                    val typedValue = value.parseTypedValue(configs.isEnableTypeAutoConversion)
-                    addProperty(PropertySpec.builder(key.firstNumberToLetter().underscore(), typedValue.first).apply {
-                        addKdoc("Resolve the \"$key\" value ${typedValue.second}")
+                keyValues.toOptimize().toUnderscores().forEach { (key, value) ->
+                    val typedValue = value.second.parseTypedValue(configs.isEnableTypeAutoConversion)
+                    addProperty(PropertySpec.builder(key.firstNumberToLetter(), typedValue.first).apply {
+                        addKdoc("Resolve the \"${value.first.toKotlinPoetNoEscape()}\" value ${typedValue.second.toKotlinPoetNoEscape()}")
                         if (configs.isEnableRestrictedAccess) addModifiers(KModifier.INTERNAL)
                         addModifiers(KModifier.CONST)
-                        initializer(typedValue.second.toKotlinPoetSpace())
+                        initializer(typedValue.second.toKotlinPoetNoEscape().toKotlinPoetSpace())
                     }.build())
                 }
             }.build())
@@ -85,4 +86,10 @@ internal class PropertiesSourcesGenerator {
      * @return [String]
      */
     private fun String.toKotlinPoetSpace() = replace(" ", "·")
+
+    /**
+     * 转换到 KotlinPoet 非转义字符内容
+     * @return [String]
+     */
+    private fun String.toKotlinPoetNoEscape() = replace("%", "%%")
 }

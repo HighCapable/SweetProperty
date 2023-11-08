@@ -27,6 +27,7 @@ import com.highcapable.sweetproperty.plugin.config.proxy.ISweetPropertyConfigs
 import com.highcapable.sweetproperty.plugin.extension.accessors.proxy.IExtensionAccessors
 import com.highcapable.sweetproperty.plugin.generator.factory.PropertyMap
 import com.highcapable.sweetproperty.plugin.generator.factory.parseTypedValue
+import com.highcapable.sweetproperty.plugin.generator.factory.toOptimize
 import com.highcapable.sweetproperty.utils.capitalize
 import com.highcapable.sweetproperty.utils.debug.SError
 import com.highcapable.sweetproperty.utils.firstNumberToLetter
@@ -255,9 +256,10 @@ internal class PropertiesAccessorsGenerator {
      *
      * 解析完成后需要调用 [releaseParseTypeSpec] 完成解析
      * @param successiveName 连续的名称
+     * @param key 键值名称 (原始名称)
      * @param value 键值内容
      */
-    private fun parseTypeSpec(successiveName: String, value: Any) {
+    private fun parseTypeSpec(successiveName: String, key: String, value: Any) {
         /**
          * 获取生成的属性键值连续名称重复次数
          * @return [Int]
@@ -279,10 +281,7 @@ internal class PropertiesAccessorsGenerator {
             var grandAcccessorsName = ""
             var grandSuccessiveName = ""
             val successiveNames = mutableListOf<Triple<String, String, String>>()
-            val splitNames = replace(".", "|").replace("-", "|")
-                .replace("_", "|").replace(" ", "_")
-                .split("|").dropWhile { it.isBlank() }
-                .ifEmpty { listOf(this) }
+            val splitNames = split("_").dropWhile { it.isBlank() }.ifEmpty { listOf(this) }
             splitNames.forEach { eachName ->
                 val name = eachName.capitalize().toNonJavaName().firstNumberToLetter()
                 grandAcccessorsName += if (grandAcccessorsName.isNotBlank()) ".$eachName" else eachName
@@ -303,7 +302,7 @@ internal class PropertiesAccessorsGenerator {
             val lastClassName = lastItem?.second ?: ""
             val lastMethodName = lastItem?.third ?: ""
             val isPreLastIndex = index == successiveNames.lastIndex - 1
-            if (successiveNames.size == 1) getOrCreateClassSpec(TOP_SUCCESSIVE_NAME).addFinalValueMethod(successiveName, methodName, className, value)
+            if (successiveNames.size == 1) getOrCreateClassSpec(TOP_SUCCESSIVE_NAME).addFinalValueMethod(key, methodName, className, value)
             if (index == successiveNames.lastIndex) return@forEachIndexed
             if (index == 0) noRepeated(TOP_SUCCESSIVE_NAME, methodName, className) {
                 getOrCreateClassSpec(TOP_SUCCESSIVE_NAME, accessorsName)
@@ -316,7 +315,7 @@ internal class PropertiesAccessorsGenerator {
                     if (!isPreLastIndex) {
                         addSuccessiveField(nextAccessorsName, nextClassName)
                         addSuccessiveMethod(nextAccessorsName, nextMethodName, nextClassName)
-                    } else addFinalValueMethod(successiveName, lastMethodName, lastClassName, value)
+                    } else addFinalValueMethod(key, lastMethodName, lastClassName, value)
                 }
                 if (!isPreLastIndex) preAddConstructorSpecNames.add(className to nextClassName)
             }
@@ -390,8 +389,8 @@ internal class PropertiesAccessorsGenerator {
             val keyValues = allKeyValues[index]
             clearGeneratedData()
             createTopClassSpec(configs)
-            keyValues.forEach { (key, value) ->
-                parseTypeSpec(key, value)
+            keyValues.toOptimize().forEach { (key, value) ->
+                parseTypeSpec(key, value.first, value.second)
                 releaseParseTypeSpec()
             }; files.add(buildTypeSpec().createJavaFile(ACCESSORS_PACKAGE_NAME))
         }; files
