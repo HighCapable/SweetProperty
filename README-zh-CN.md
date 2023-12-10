@@ -4,11 +4,11 @@
 [![GitHub release](https://img.shields.io/github/v/release/HighCapable/SweetProperty?display_name=release&logo=github&color=green)](https://github.com/HighCapable/SweetProperty/releases)
 [![Telegram](https://img.shields.io/badge/discussion-Telegram-blue.svg?logo=telegram)](https://t.me/HighCapable_Dev)
 
-<img src="https://github.com/HighCapable/SweetProperty/blob/master/img-src/icon.png?raw=true" width = "100" height = "100" alt="LOGO"/>
+<img src="img-src/icon.png" width = "100" height = "100" alt="LOGO"/>
 
 一个轻松在任意地方获取项目属性的 Gradle 插件。
 
-[English](https://github.com/HighCapable/SweetProperty/blob/master/README.md) | 简体中文
+[English](README.md) | 简体中文
 
 | <img src="https://github.com/HighCapable/.github/blob/main/img-src/logo.jpg?raw=true" width = "30" height = "30" alt="LOGO"/> | [HighCapable](https://github.com/HighCapable) |
 |-------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
@@ -43,11 +43,11 @@
 
 ## 开始使用
 
-- [点击这里](https://github.com/HighCapable/SweetProperty/blob/master/docs/guide-zh-CN.md) 查看使用文档
+- [点击这里](docs/guide-zh-CN.md) 查看使用文档
 
 ## 更新日志
 
-- [点击这里](https://github.com/HighCapable/SweetProperty/blob/master/docs/changelog-zh-CN.md) 查看历史更新日志
+- [点击这里](docs/changelog-zh-CN.md) 查看历史更新日志
 
 ## 项目推广
 

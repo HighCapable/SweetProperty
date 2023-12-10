@@ -4,11 +4,11 @@
 [![GitHub release](https://img.shields.io/github/v/release/HighCapable/SweetProperty?display_name=release&logo=github&color=green)](https://github.com/HighCapable/SweetProperty/releases)
 [![Telegram](https://img.shields.io/badge/discussion-Telegram-blue.svg?logo=telegram)](https://t.me/HighCapable_Dev)
 
-<img src="https://github.com/HighCapable/SweetProperty/blob/master/img-src/icon.png?raw=true" width = "100" height = "100" alt="LOGO"/>
+<img src="img-src/icon.png" width = "100" height = "100" alt="LOGO"/>
 
 An easy get project properties anywhere Gradle plugin.
 
-English | [简体中文](https://github.com/HighCapable/SweetProperty/blob/master/README-zh-CN.md)
+English | [简体中文](README-zh-CN.md)
 
 | <img src="https://github.com/HighCapable/.github/blob/main/img-src/logo.jpg?raw=true" width = "30" height = "30" alt="LOGO"/> | [HighCapable](https://github.com/HighCapable) |
 |-------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------|
@@ -48,11 +48,11 @@ Some functions may be incompatible, support will be gradually dropped in the fut
 
 ## Get Started
 
-- [Click here](https://github.com/HighCapable/SweetProperty/blob/master/docs/guide.md) to view the documentation
+- [Click here](docs/guide.md) to view the documentation
 
 ## Changelog
 
-- [Click here](https://github.com/HighCapable/SweetProperty/blob/master/docs/changelog.md) to view the historical changelog
+- [Click here](docs/changelog.md) to view the historical changelog
 
 ## Promotion
 
