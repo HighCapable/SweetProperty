@@ -35,5 +35,5 @@ object SweetProperty {
     const val VERSION = SweetPropertyProperties.PROJECT_VERSION
 
     /** 项目地址 */
-    const val PROJECT_URL = SweetPropertyProperties.POM_URL
+    const val PROJECT_URL = SweetPropertyProperties.PROJECT_URL
 }
