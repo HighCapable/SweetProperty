@@ -15,7 +15,7 @@ plugins:
     version: 1.9.22
   com.vanniktech.maven.publish:
     alias: maven-publish
-    version: 0.26.0
+    version: 0.27.0
 
 libraries:
   com.squareup.okhttp3:
@@ -23,7 +23,7 @@ libraries:
       version: 4.12.0
   com.squareup:
     kotlinpoet:
-      version: 1.15.3
+      version: 1.16.0
     javapoet:
       version: 1.13.0
   net.lingala.zip4j:
