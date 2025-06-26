@@ -203,11 +203,12 @@ internal class PropertiesAccessorsGenerator {
         addMethod(
             MethodSpec.methodBuilder("get${getOrCreateUsedSuccessiveMethodName(methodName, className).capitalize()}").apply {
                 val typedValue = value.parseTypedValue(configs.isEnableTypeAutoConversion)
-                addJavadoc("Resolve the \"$accessorsName\" value ${typedValue.second}")
+                val safeValueForJavadoc = typedValue.second.replace("$", "$$")
+                addJavadoc("Resolve the \"$accessorsName\" value $safeValueForJavadoc")
                 addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                     .addAnnotation(Nonnull::class.java)
                     .returns(typedValue.first.java)
-                    .addStatement("return ${typedValue.second}")
+                    .addStatement("return $safeValueForJavadoc")
             }.build()
         )
 
