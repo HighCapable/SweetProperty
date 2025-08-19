@@ -57,17 +57,21 @@ internal fun Any.parseTypedValue(isAutoConversion: Boolean): Pair<KClass<*>, Str
             } else it.replace("\"", "\\\"")
         }
     if (!isAutoConversion) return Pair(String::class, "\"$valueString\"")
+    val trimmed = valueString.trim()
     val typeSpec = when {
-        isStringType -> String::class
-        valueString.trim().toIntOrNull() != null -> Int::class
-        valueString.trim().toLongOrNull() != null -> Long::class
-        valueString.trim().toDoubleOrNull() != null -> Double::class
-        valueString.trim().toFloatOrNull() != null -> Float::class
-        valueString.trim() == "true" || valueString.trim() == "false" -> Boolean::class
+        isStringType || trimmed.any { !it.isDigit() && it != '.' && it != '-' } -> String::class
+        trimmed.toIntOrNull() != null -> Int::class
+        trimmed.toLongOrNull() != null -> Long::class
+        trimmed.toDoubleOrNull() != null -> Double::class
+        trimmed.toFloatOrNull() != null -> Float::class
+        trimmed == "true" || trimmed == "false" -> Boolean::class
         else -> String::class
-    }; return Pair(typeSpec, if (typeSpec == String::class) "\"$valueString\"" else valueString.let {
-        if (typeSpec == Long::class && !it.endsWith("L")) "${it}L" else it
-    })
+    }
+    val finalValue = when (typeSpec) {
+        String::class -> "\"$valueString\""
+        Long::class -> if (trimmed.endsWith("L")) trimmed else "${trimmed}L"
+        else -> trimmed
+    }; return typeSpec to finalValue
 }
 
 /**
