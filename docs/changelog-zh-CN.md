@@ -46,3 +46,7 @@
   `removeContentEntry: removed content entry url 'build/generated/sweet-property' still exists after removing`
 - 新增 `sourceSetName` 方法，允许自定义要部署的源集名称
 - 修复在类型自动转换过程中某些 `commit id` 和 Hash 可能被识别为数值类型的问题
+
+## 1.0.7 | 2025.08.19
+
+- 合并 [#1](https://github.com/HighCapable/SweetProperty/pull/1) 并重新发布版本
