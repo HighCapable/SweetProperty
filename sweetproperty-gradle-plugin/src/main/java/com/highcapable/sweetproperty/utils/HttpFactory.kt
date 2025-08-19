@@ -52,7 +52,7 @@ internal fun String.executeUrlBody(username: String = "", password: String = "",
                 else -> SError.make("Invalid URL: $this")
             }).get().build()
         ).execute().let {
-            if (it.code == 200 || it.code == 404) it.body?.string() ?: ""
+            if (it.code == 200 || it.code == 404) it.body.string()
             else SError.make("Request failed with code ${it.code}")
         }
 }.onFailure { if (isShowFailure) SLog.error("Failed to connect to $this\n$it") }.getOrNull() ?: ""
