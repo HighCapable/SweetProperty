@@ -56,6 +56,7 @@ internal object DefaultConfigs {
     ) = object : ISweetPropertyConfigs.ISourcesCodeGenerateConfigs {
         override val name get() = name
         override val generateDirPath get() = ISweetPropertyConfigs.DEFAULT_GENERATE_DIR_PATH
+        override val sourceSetName get() = ISweetPropertyConfigs.DEFAULT_SOURCE_SET_NAME
         override val packageName get() = ""
         override val className get() = ""
         override val isEnableRestrictedAccess get() = false

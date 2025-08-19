@@ -174,6 +174,16 @@ open class SweetPropertyConfigureExtension internal constructor() {
             @JvmName("generateDirPath") set
 
         /**
+         * 自定义部署的 `sourceSet` 名称
+         *
+         * 如果你的项目源码部署名称不是默认值 - 可以在这里自定义
+         *
+         * 默认为 [ISweetPropertyConfigs.DEFAULT_SOURCE_SET_NAME]
+         */
+        var sourceSetName = ""
+            @JvmName("sourceSetName") set
+
+        /**
          * 自定义生成的包名
          *
          * Android 项目默认使用 "android" 配置方法块中的 "namespace"

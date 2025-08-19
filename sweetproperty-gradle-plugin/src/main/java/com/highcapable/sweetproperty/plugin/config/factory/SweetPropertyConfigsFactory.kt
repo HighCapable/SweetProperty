@@ -74,6 +74,10 @@ private fun SweetPropertyConfigureExtension.SourcesCodeGenerateConfigureExtensio
         get() = this@create.generateDirPath.noBlank()
             ?: global?.generateDirPath?.noBlank()
             ?: DefaultConfigs.sourcesCodeGenerateConfigs(name, selfBase, globalBase).generateDirPath
+    override val sourceSetName
+        get() = this@create.sourceSetName.noBlank()
+            ?: global?.sourceSetName?.noBlank()
+            ?: DefaultConfigs.sourcesCodeGenerateConfigs(name, selfBase, globalBase).sourceSetName
     override val packageName
         get() = this@create.packageName.noBlank()
             ?: global?.packageName?.noBlank()

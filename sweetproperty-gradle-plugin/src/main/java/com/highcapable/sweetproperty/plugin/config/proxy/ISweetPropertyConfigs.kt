@@ -41,6 +41,11 @@ internal interface ISweetPropertyConfigs {
         internal const val DEFAULT_GENERATE_DIR_PATH = "build/generated/${SweetPropertyProperties.PROJECT_MODULE_NAME}"
 
         /**
+         * 默认的部署 `sourceSet` 名称
+         */
+        internal const val DEFAULT_SOURCE_SET_NAME = "main"
+
+        /**
          * 默认的属性配置文件名称
          *
          * "gradle.properties"
@@ -90,6 +95,9 @@ internal interface ISweetPropertyConfigs {
 
         /** 自定义生成的目录路径 */
         val generateDirPath: String
+
+        /** 自定义部署的 `sourceSet` 名称 */
+        val sourceSetName: String
 
         /** 自定义生成的包名 */
         val packageName: String

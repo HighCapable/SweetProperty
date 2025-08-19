@@ -41,6 +41,7 @@ import com.highcapable.sweetproperty.utils.camelcase
 import com.highcapable.sweetproperty.utils.code.entity.MavenPomData
 import com.highcapable.sweetproperty.utils.code.factory.compile
 import com.highcapable.sweetproperty.utils.debug.SError
+import com.highcapable.sweetproperty.utils.debug.SLog
 import com.highcapable.sweetproperty.utils.flatted
 import com.highcapable.sweetproperty.utils.hasInterpolation
 import com.highcapable.sweetproperty.utils.isEmpty
@@ -49,7 +50,6 @@ import com.highcapable.sweetproperty.utils.noEmpty
 import com.highcapable.sweetproperty.utils.replaceInterpolation
 import com.highcapable.sweetproperty.utils.toStringMap
 import com.highcapable.sweetproperty.utils.uppercamelcase
-import org.gradle.api.DomainObjectCollection
 import org.gradle.api.Project
 import org.gradle.api.initialization.Settings
 import java.io.File
@@ -212,6 +212,8 @@ internal object PropertiesDeployHelper {
                 if (configs.isEnable) configureSourceSets(project = this)
                 return
             }; outputDir.apply { if (exists()) deleteRecursively() }
+            // 每次都会重新创建目录
+            outputDir.mkdirs()
             cachedProjectProperties[fullName()] = properties
             val packageName = generatedPackageName(configs, project = this)
             val className = generatedClassName(configs, project = this)
@@ -227,16 +229,26 @@ internal object PropertiesDeployHelper {
      * @param project 当前项目
      */
     private fun configureSourceSets(project: Project) {
-        fun Project.deploySourceSets(name: String) = runCatching {
+        val configs = configs.with(project).sourcesCode
+        fun Project.deploySourceSet(name: String, sourceSetName: String = configs.sourceSetName) = runCatching {
             val extension = get(name)
-            val collection = extension.javaClass.getMethod("getSourceSets").invoke(extension) as DomainObjectCollection<*>
-            collection.configureEach {
-                val kotlin = javaClass.getMethod("getKotlin").invoke(this)
-                kotlin.javaClass.getMethod("srcDir", Any::class.java).invoke(kotlin, configs.with(project).sourcesCode.generateDirPath)
-            }
+            val collection = extension.javaClass.getMethod("getSourceSets").invoke(extension) as? Iterable<*>?
+            val mainSet = collection?.firstOrNull {
+                it?.javaClass?.getMethod("getName")?.invoke(it) == sourceSetName
+            } ?: return@runCatching SLog.warn("Could not found source set \"$sourceSetName\" for $name extension")
+            val kotlin = mainSet.javaClass.getMethod("getKotlin").invoke(mainSet)
+            val generateDir = configs.generateDirPath
+            val generateFile = File(generateDir)
+            // 确保目录存在
+            if (!generateFile.exists()) generateFile.mkdirs()
+            val srcDirs = kotlin.javaClass.getMethod("getSrcDirs").invoke(kotlin) as Set<*>
+            val alreadyAdded = srcDirs.any { it is File && it.canonicalPath == generateFile.canonicalPath }
+            if (!alreadyAdded) kotlin.javaClass.getMethod("srcDir", Any::class.java).invoke(kotlin, generateFile)
+        }.onFailure {
+            SLog.error(msg = "Failed to deploy source set \"$sourceSetName\" for $name extension\n${it.stackTraceToString()}")
         }
-        if (project.hasExtension("kotlin")) project.deploySourceSets(name = "kotlin")
-        if (project.hasExtension("android")) project.deploySourceSets(name = "android")
+        if (project.hasExtension("kotlin")) project.deploySourceSet(name = "kotlin")
+        if (project.hasExtension("android")) project.deploySourceSet(name = "android")
     }
 
     /**
