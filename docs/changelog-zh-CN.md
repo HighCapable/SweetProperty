@@ -40,10 +40,11 @@
 
 - 修复遇到特殊字符和重复键值名称造成代码生成失败的严重问题
 
-## 1.0.7 | 2025.08.19
+## 1.0.8 | 2025.08.19
 
 - 修复在新版 Android Gradle Plugin 及 Android Studio/IDEA 中部署源码路径时的错误
   `removeContentEntry: removed content entry url 'build/generated/sweet-property' still exists after removing`
 - 新增 `sourceSetName` 方法，允许自定义要部署的源集名称
 - 修复在类型自动转换过程中某些 `commit id` 和 Hash 可能被识别为数值类型的问题
-- 合并 [#1](https://github.com/HighCapable/SweetProperty/pull/1) 并重新发布版本 (1.0.7)
+- 合并 [#1](https://github.com/HighCapable/SweetProperty/pull/1) 并重新发布版本 (1.0.6)
+- 修复由于 OSS 存储库被弃用导致重复提示检查更新的问题 (1.0.7)
