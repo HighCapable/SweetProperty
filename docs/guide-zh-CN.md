@@ -155,6 +155,10 @@ sweetProperty {
             // 默认为 "build/generated/sweet-property"
             // 建议将生成的代码放置于 "build" 目录下，因为生成的代码不建议去修改它
             generateDirPath = "build/generated/sweet-property"
+            // 自定义部署的 `sourceSet` 名称
+            // 如果你的项目源码部署名称不是默认值，可以在这里自定义
+            // 默认为 "main"
+            sourceSetName = "main"
             // 自定义生成的包名
             // Android 项目默认使用 "android" 配置方法块中的 "namespace"
             // 普通的 Kotlin on Jvm 项目默认使用项目设置的 "project.group"

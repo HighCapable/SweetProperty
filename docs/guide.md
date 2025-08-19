@@ -168,6 +168,10 @@ sweetProperty {
             // It is recommended to place the generated code in the "build" directory,
             // because the generated code is not recommended to be modified
             generateDirPath = "build/generated/sweet-property"
+            // Custom deployed `sourceSet` name
+            // If your project source code deployment name is not the default value, you can customize it here
+            // Defaults to "main"
+            sourceSetName = "main"
             // Custom generated package name
             // Android projects use the "namespace" in the "android" configuration method block by default
             // Ordinary Kotlin on Jvm projects use the "project.group" of the project settings by default
