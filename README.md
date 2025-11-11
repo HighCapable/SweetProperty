@@ -16,6 +16,11 @@ English | [简体中文](README-zh-CN.md)
 
 This project belongs to the above-mentioned organization, **click the link above to follow this organization** and discover more good projects.
 
+## 🚨 Maintenance of this project has been stopped
+
+The `SweetProperty` project has been deprecated due to many unsolved black box issues, so we no longer recommend anyone to use it.
+Please now migrate to the brand-new design [Gropify](https://github.com/HighCapable/Gropify).
+
 ## What's this
 
 This is a Gradle plugin to easily get the key-values in the Gradle project properties configuration file `gradle.properties`.
